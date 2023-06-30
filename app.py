@@ -17,9 +17,28 @@ db.init_app(app)
 def index():
     return render_template("home.html")
 
-#@app.route("/register", methods = ["POST", "GET"])
-#def register():
-#    if request.method == 'POST':
+@app.route("/register", methods = ["POST", "GET"])
+def register():
+    #Recibimos los datos del Front
+    if request.method == 'POST':
+        username = request.form ["username"]
+        email = request.form ["correo_user"]
+        password = request.form ["password"]
+        nombre = request.form ["nombre"]
+        apellido = request.form ["apellido"]
+        
+        usuario = User(username, email, password, nombre, nombre, apellido)
+        #Agregamos a la db
+        #Agrego con
+        db.session.add(usuario)
+        #Y confirmo con
+        db.session.commit()
+
+        #Ver como era
+        #global current_user
+        #current_user = id_usuario
+        return 'Registrado correctamente'
+    return render_template ("register.html")
 
 
 @app.route("/agregar")
