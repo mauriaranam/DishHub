@@ -1,5 +1,5 @@
 #Importancion de librerias  
-from flask import Flask
+from flask import Flask, render_template, request
 # Importamos los modelos de la tablas
 from models import db, User
 
@@ -12,6 +12,14 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Inicializamos la base de datos
 db.init_app(app)
+
+@app.route("/")
+def index():
+    return render_template("home.html")
+
+#@app.route("/register", methods = ["POST", "GET"])
+#def register():
+#    if request.method == 'POST':
 
 
 @app.route("/agregar")
