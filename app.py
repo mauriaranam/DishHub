@@ -1,8 +1,27 @@
-#Importacion de Librerias
-from flask import Flask, request, render_template
-from flask_sqlalchemy import SQLAlchemy
+#Importancion de librerias  
+from flask import Flask
+# Importamos los modelos de la tablas
+from models import db, User
 
-#Creamos la app y el modelo de la base de Datos (Hacer eso que hicimos el otro dia de poner en otro lado, no me recuerdo como era bro jsjsjs)
 app = Flask(__name__)
-app.config ['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///base_de_datos.db'
-app.config ['SECRET_KEY'] = 'puni77'
+
+
+# configurar la base de datos SQLite
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.sqlite3"
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Inicializamos la base de datos
+db.init_app(app)
+
+
+@app.route("/agregar")
+def hello_world():
+    usuario_agregar = User(usuario='Rodri', password='132')
+    db.session.add(usuario_agregar)
+    db.session.commit()
+    return 'se agrego correctamente'
+
+
+## Breakpoint ##
+if __name__ == "__main__":
+    app.run (debug=True)
