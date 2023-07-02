@@ -1,5 +1,5 @@
 #Importancion de librerias  
-from flask import Flask
+from flask import Flask, redirect, render_template, request
 # Importamos los modelos de la tablas
 from models import db, User
 
@@ -14,12 +14,11 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 
 
-@app.route("/agregar")
-def hello_world():
-    usuario_agregar = User(usuario='Rodri', password='132')
-    db.session.add(usuario_agregar)
-    db.session.commit()
-    return 'se agrego correctamente'
+@app.route('/')
+def home():
+    
+    return render_template('home.html')
+
 
 
 ## Breakpoint ##
