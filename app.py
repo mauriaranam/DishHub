@@ -27,7 +27,7 @@ def register():
         nombre = request.form ["nombre"]
         apellido = request.form ["apellido"]
         
-        usuario = User(username, email, password, nombre, nombre, apellido)
+        usuario = User()
         #Agregamos a la db
         #Agrego con
         db.session.add(usuario)
@@ -39,14 +39,6 @@ def register():
         #current_user = id_usuario
         return 'Registrado correctamente'
     return render_template ("register.html")
-
-
-@app.route("/agregar")
-def hello_world():
-    usuario_agregar = User(usuario='Rodri', password='132')
-    db.session.add(usuario_agregar)
-    db.session.commit()
-    return 'se agrego correctamente'
 
 
 ## Breakpoint ##
