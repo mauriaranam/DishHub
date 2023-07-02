@@ -11,7 +11,7 @@ class User(db.Model):
     password = db.Column(db.String(12))
     nombre = db.Column(db.String(12))
     apellido = db.Column(db.String(12))
-    #foto_usuario no se como poner en una db
+    receta = db.relationship('Receta', backref = 'user')
 
     def __init__ (self, username, correo_user, password, nombre,apellido):
         self.username = username
@@ -22,13 +22,16 @@ class User(db.Model):
 
 class Receta(db.Model):
     id_receta = db.Column(db.Integer, primary_key=True)
-    ####id_usuario = db.Column(db.Integer, foreign_key=True)
-    nombre_receta = db.Column(db.String(25), unique=True, nullable=False)
-    descripcion_receta = db.Column(db.String(25))
-    ####ingredientes = db.Column(db.List)
-    calificacion_receta = db.Column(db.Integer)
-    #foto_receta no se como poner en una db
-    fecha_receta = db.Column(db.String)
+    nombre_receta = db.Column(db.String(25))
+    descripcion_receta = db.Column(db.String)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 
-    #Iterar la lista de ingredientes dsp
+    def __init__ (self, nombre_receta, descripcion_receta, user_id):
+        self.nombre_receta = nombre_receta
+        self.descripcion_receta = descripcion_receta
+        self.user_id = user_id
+
+    #calificacion_receta = db.Column(db.Integer)
+    #fecha_receta = db.Column(db.String)
+#Lista de ingredientes despues para la db
