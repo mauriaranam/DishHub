@@ -6,5 +6,8 @@ Pipfile/
 Pipfile.lock
 
 
-#
+# Database
 instance/
+
+# pycache
+__pycache__
