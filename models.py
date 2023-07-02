@@ -13,8 +13,7 @@ class User(db.Model):
     apellido = db.Column(db.String(12))
     #foto_usuario no se como poner en una db
 
-    def __init__ (self,id_usuario, username, password, correo_user, nombre,apellido):
-        self.id_usuario = id_usuario
+    def __init__ (self, username, correo_user, password, nombre,apellido):
         self.username = username
         self.correo_user = correo_user
         self.password = password

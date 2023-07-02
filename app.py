@@ -27,13 +27,12 @@ def register():
         nombre = request.form ["nombre"]
         apellido = request.form ["apellido"]
         
-        usuario = User()
+        usuario = User(username, email, password, nombre, apellido)
         #Agregamos a la db
         #Agrego con
         db.session.add(usuario)
         #Y confirmo con
         db.session.commit()
-
         #Ver como era
         #global current_user
         #current_user = id_usuario
