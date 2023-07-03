@@ -1,7 +1,7 @@
 #Importancion de librerias  
-from flask import Flask, redirect, render_template, request
+from flask import Flask, redirect, render_template, request, render_template, request, redirect, url_for
 # Importamos los modelos de la tablas
-from models import db, User
+from models import db, User, Receta
 
 app = Flask(__name__)
 
@@ -13,26 +13,72 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Inicializamos la base de datos
 db.init_app(app)
 
+@app.route("/")
+def index():
+    return render_template("home.html")
 
-@app.route('/')
-def home():
-    return render_template('home.html')
-
-@app.route('/login')
-def login():
-    return render_template('login.html')
-
-@app.route('/register')
+@app.route("/register", methods=["POST", "GET"])
 def register():
-    return render_template('register.html')
+    #Recibimos los datos del Front
+    if request.method == 'POST':
+        username = request.form ["username"]
+        email = request.form ["correo_user"]
+        password = request.form ["password"]
+        nombre = request.form ["nombre"]
+        apellido = request.form ["apellido"]
+        usuario = User(username=username, correo_user=email, password=password, nombre=nombre,apellido=apellido)
+        #Agregamos a la db
+        #Agrego con
+        db.session.add(usuario)
+        #Y confirmo con
+        db.session.commit()
+        global current_user
+        current_user = usuario.id
+        print(current_user)
+        return redirect(url_for("login"))
+    return render_template ("register.html")
 
-@app.route('/recipe')
-def recipe():
-    return render_template('recipe.html')
+@app.route("/receta", methods=["POST", "GET"])
+def receta():
+    #Recibimos los datos del Front
+    if request.method == 'POST':
+        nombre_receta = request.form ["nombre_receta"]
+        descripcion_receta = request.form ["descripcion_receta"]
+        ingredientes = request.form ["ingredientes"]
+        # pepino, arroz, ajo
+        # que se separe por ',' cada ingrediente
+        # bucle que por cada ingrediente
+        # agregue a []
+        global current_user 
+        user_id = current_user
+        print(user_id)
+        receta_de_usuario = Receta(nombre_receta=nombre_receta,descripcion_receta=descripcion_receta,ingredientes=ingredientes, user_id=user_id)
+        db.session.add(receta_de_usuario)
+        db.session.commit()
+        return redirect(url_for("home"))
+    return render_template ("receta.html")
 
-@app.route('/recipe_new')
-def recipe_new():
-    return render_template('recipe_new.html')
+
+@app.route("/home")
+def home():
+    return render_template ("home.html")
+
+@app.route('/login', methods = ['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        correo_user = request.form ['correo_user']
+        password = request.form ['password']
+        usuario_db = User.query.filter_by(correo_user=correo_user).first()
+        if usuario_db is not None:
+            if usuario_db.password == password:
+                global current_user 
+                current_user = usuario_db.id
+                return redirect(url_for('home'))
+            else:
+                return redirect(url_for('login'))
+        elif usuario_db is None:
+            return redirect(url_for('login'))  
+    return render_template('login.html')
 
 ## Breakpoint ##
 if __name__ == "__main__":
