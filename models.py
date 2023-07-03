@@ -20,17 +20,22 @@ class User(db.Model):
         self.nombre = nombre
         self.apellido = apellido
 
+
 class Receta(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre_receta = db.Column(db.String(25))
     descripcion_receta = db.Column(db.String)
+    ingredientes = db.Column(db.String)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 
-    def __init__ (self, nombre_receta, descripcion_receta):
+
+
+    def __init__ (self, nombre_receta, descripcion_receta,ingredientes,     user_id):
         self.nombre_receta = nombre_receta
         self.descripcion_receta = descripcion_receta
-        #self.user_id = user_id
+        self.ingredientes = ingredientes
+        self.user_id = user_id
 
     #calificacion_receta = db.Column(db.Integer)
     #fecha_receta = db.Column(db.String)

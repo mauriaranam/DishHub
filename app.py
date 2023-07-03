@@ -26,14 +26,15 @@ def register():
         password = request.form ["password"]
         nombre = request.form ["nombre"]
         apellido = request.form ["apellido"]
-        usuario = User(username=username, correo_user=email, password=password, nombre=nombre, apellido=apellido)
+        usuario = User(username=username, correo_user=email, password=password, nombre=nombre,apellido=apellido)
         #Agregamos a la db
         #Agrego con
         db.session.add(usuario)
         #Y confirmo con
         db.session.commit()
         global current_user
-        current_user = User.id
+        current_user = usuario.id
+        print(current_user)
         return redirect(url_for("login"))
     return render_template ("register.html")
 
@@ -43,9 +44,11 @@ def receta():
     if request.method == 'POST':
         nombre_receta = request.form ["nombre_receta"]
         descripcion_receta = request.form ["descripcion_receta"]
+        ingredientes = request.form ["ingredientes"]
         global current_user 
         user_id = current_user
-        receta_de_usuario = Receta(nombre_receta=nombre_receta,descripcion_receta=descripcion_receta, user_id=user_id)
+        print(user_id)
+        receta_de_usuario = Receta(nombre_receta=nombre_receta,descripcion_receta=descripcion_receta,ingredientes=ingredientes, user_id=user_id)
         db.session.add(receta_de_usuario)
         db.session.commit()
         return redirect(url_for("home"))
