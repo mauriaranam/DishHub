@@ -34,6 +34,10 @@ def recipe():
 def recipe_new():
     return render_template('recipe_new.html')
 
+@app.route('/your_recipes')
+def your_recipes():
+    return render_template('your_recipes.html')
+
 ## Breakpoint ##
 if __name__ == "__main__":
     app.run (debug=True)
