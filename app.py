@@ -30,6 +30,10 @@ def register():
 def recipe():
     return render_template('recipe.html')
 
+@app.route('/recipe_new')
+def recipe_new():
+    return render_template('recipe_new.html')
+
 ## Breakpoint ##
 if __name__ == "__main__":
     app.run (debug=True)
