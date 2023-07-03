@@ -18,14 +18,21 @@ db.init_app(app)
 def home():
     return render_template('home.html')
 
-@app.route(('/login'))
+@app.route('/login')
 def login():
     return render_template('login.html')
 
-@app.route(('/register'))
+@app.route('/register')
 def register():
     return render_template('register.html')
 
+@app.route('/recipe')
+def recipe():
+    return render_template('recipe.html')
+
+@app.route('/recipe_new')
+def recipe_new():
+    return render_template('recipe_new.html')
 
 ## Breakpoint ##
 if __name__ == "__main__":
