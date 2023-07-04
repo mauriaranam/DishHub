@@ -40,11 +40,11 @@ def register():
 
 @app.route("/recipe_new", methods=["POST", "GET"])
 def recipe_new():
-    #Recibimos los datos del Front
     if request.method == 'POST':
-        nombre_receta = request.form ["nombre_receta"]
-        descripcion_receta = request.form ["descripcion_receta"]
-        ingredientes = request.form ["ingredientes"]
+        nombre_receta = request.form.get("nombre_receta")
+        descripcion_receta = request.form.get("descripcion_receta")
+        ingredientes = request.form.get("ingredientes")
+        print(nombre_receta, descripcion_receta, ingredientes)
         # pepino, arroz, ajo
         # que se separe por ',' cada ingrediente
         # bucle que por cada ingrediente
@@ -56,13 +56,15 @@ def recipe_new():
         db.session.add(receta_de_usuario)
         db.session.commit()
         return redirect(url_for("home"))
-    return render_template ("receta.html")
+    return render_template ("recipe_new.html")
 
 
 #Ruta donde se ven todas las recetas
 @app.route("/home")
 def home():
-    return render_template ("home.html")
+    recetas = Receta.query.all()
+    print (recetas)
+    return render_template ("home.html",recetas=recetas)
 
 #Ruta para editar una receta
 @app.route("/recipe_edit")
@@ -77,7 +79,7 @@ def recipe_del():
 #Ruta donde se ve la receta seleccionada
 @app.route("/recipe")
 def recipe():
-    render_template ("recipe.html")
+    return render_template ("recipe.html")
 
 @app.route("/your_recipes")
 def your_recipes():
