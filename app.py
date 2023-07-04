@@ -13,10 +13,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Inicializamos la base de datos
 db.init_app(app)
 
-@app.route("/")
-def index():
-    return render_template("home.html")
-
 @app.route("/register", methods=["POST", "GET"])
 def register():
     #Recibimos los datos del Front
@@ -37,6 +33,23 @@ def register():
         print(current_user)
         return redirect(url_for("login"))
     return render_template ("register.html")
+
+@app.route('/login', methods = ['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        correo_user = request.form ['correo_user']
+        password = request.form ['password']
+        usuario_db = User.query.filter_by(correo_user=correo_user).first()
+        if usuario_db is not None:
+            if usuario_db.password == password:
+                global current_user 
+                current_user = usuario_db.id
+                return redirect(url_for('home'))
+            else:
+                return redirect(url_for('login'))
+        elif usuario_db is None:
+            return redirect(url_for('login'))  
+    return render_template('login.html')
 
 @app.route("/recipe_new", methods=["POST", "GET"])
 def recipe_new():
@@ -64,6 +77,11 @@ def recipe_new():
 def home():
     return render_template ("home.html")
 
+#Ruta donde se ve la receta seleccionada
+@app.route("/recipe")
+def recipe():
+    render_template ("recipe.html")
+
 #Ruta para editar una receta
 @app.route("/recipe_edit")
 def recipe_edit():
@@ -74,35 +92,10 @@ def recipe_edit():
 def recipe_del():
     pass
 
-#Ruta donde se ve la receta seleccionada
-@app.route("/recipe")
-def recipe():
-    render_template ("recipe.html")
-
 @app.route("/your_recipes")
 def your_recipes():
     render_template ("your_recipes.html")
 
-@app.route('/login', methods = ['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        correo_user = request.form ['correo_user']
-        password = request.form ['password']
-        usuario_db = User.query.filter_by(correo_user=correo_user).first()
-        if usuario_db is not None:
-            if usuario_db.password == password:
-                global current_user 
-                current_user = usuario_db.id
-                return redirect(url_for('home'))
-            else:
-                return redirect(url_for('login'))
-        elif usuario_db is None:
-            return redirect(url_for('login'))  
-    return render_template('login.html')
-
-@app.route('/your_recipes')
-def your_recipes():
-    return render_template('your_recipes.html')
 
 ## Breakpoint ##
 if __name__ == "__main__":
