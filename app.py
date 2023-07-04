@@ -44,14 +44,8 @@ def recipe_new():
         nombre_receta = request.form.get("nombre_receta")
         descripcion_receta = request.form.get("descripcion_receta")
         ingredientes = request.form.get("ingredientes")
-        print(nombre_receta, descripcion_receta, ingredientes)
-        # pepino, arroz, ajo
-        # que se separe por ',' cada ingrediente
-        # bucle que por cada ingrediente
-        # agregue a []
         global current_user 
         user_id = current_user
-        print(user_id)
         receta_de_usuario = Receta(nombre_receta=nombre_receta,descripcion_receta=descripcion_receta,ingredientes=ingredientes, user_id=user_id)
         db.session.add(receta_de_usuario)
         db.session.commit()
@@ -63,13 +57,13 @@ def recipe_new():
 @app.route("/home")
 def home():
     recetas = Receta.query.all()
-    print (recetas)
+    print(recetas)
     return render_template ("home.html",recetas=recetas)
 
 #Ruta para editar una receta
 @app.route("/recipe_edit")
 def recipe_edit():
-    render_template ("recipe_edit.html")
+    return render_template ("recipe_edit.html")
 
 #Ruta donde se eliminan las recetas
 @app.route("/recipe_del")
@@ -77,9 +71,12 @@ def recipe_del():
     pass
 
 #Ruta donde se ve la receta seleccionada
-@app.route("/recipe")
-def recipe():
-    return render_template ("recipe.html")
+@app.route("/recipe/<id>")
+def recipe(id):
+    receta_buscada = Receta.query.get(id)
+    lista_ingredientes = receta_buscada.ingredientes.split(",")
+    print(lista_ingredientes)
+    return render_template ("recipe.html", receta_buscada=receta_buscada, lista_ingredientes=lista_ingredientes)
 
 @app.route("/your_recipes")
 def your_recipes():
