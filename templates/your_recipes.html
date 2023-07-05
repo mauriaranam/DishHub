@@ -1,5 +1,39 @@
 {% extends 'base.html' %}
 
 {% block body %}
-    
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Mis Recetas</title>
+    </head>
+    <body>
+        <h1>Mis Recetas</h1>
+        {% for receta in query_recetas %}
+        <h1 class="italic text-black-500">- {{receta.nombre_receta}}</h1>
+        <li class="italic text-black-500">{{receta.descripcion_receta}}</li>
+        <li class="italic text-black-500">{{receta.ingredientes}}</li>
+        <a href="/recipe_edit/{{receta.id}}" class="text-sm font-semibold leading-6 text-gray-900">Editar Receta</a>
+        <h1> ----- </h1>
+        {% endfor %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </body>
+    </html>
 {% endblock %}

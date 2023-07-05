@@ -94,13 +94,22 @@ def recipe_new():
 #Ruta para ver tus recetas
 @app.route("/your_recipes")
 def your_recipes():
-    return render_template ("your_recipes.html")
+    query_recetas = Receta.query.filter_by(user_id = current_user).all()
+    return render_template ("your_recipes.html", query_recetas=query_recetas)
 
 
 #Ruta para editar una receta
-@app.route("/recipe_edit")
-def recipe_edit():
-    return render_template ("recipe_edit.html")
+@app.route("/recipe_edit/<id>", methods=['POST', 'GET'])
+def recipe_edit(id):
+    receta = Receta.query.get(id)
+    if request.method == 'POST':
+        receta.nombre_receta = request.form['nombre_receta']
+        receta.descripcion_receta = request.form['descripcion_receta']
+        receta.ingredientes = request.form['ingredientes']
+        db.session.commit()
+        return redirect(url_for("your_recipes"))
+    #lista_ingredientes = receta.ingredientes.split(",")
+    return render_template ("recipe_edit.html", receta=receta) #lista_ingredientes=lista_ingredientes)
 
 
 #Ruta donde se eliminan las recetas
