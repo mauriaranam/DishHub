@@ -13,6 +13,28 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Inicializamos la base de datos
 db.init_app(app)
 
+@app.route("/")
+def index():
+    return render_template("home.html")
+
+
+#Ruta donde se ven todas las recetas
+@app.route("/home")
+def home():
+    recetas = Receta.query.all()
+    print(recetas)
+    return render_template ("home.html",recetas=recetas)
+
+
+#Ruta donde se ve la receta seleccionada
+@app.route("/recipe/<id>")
+def recipe(id):
+    receta_buscada = Receta.query.get(id)
+    lista_ingredientes = receta_buscada.ingredientes.split(",")
+    print(lista_ingredientes)
+    return render_template ("recipe.html", receta_buscada=receta_buscada, lista_ingredientes=lista_ingredientes)
+
+#Ruta para registrarse
 @app.route("/register", methods=["POST", "GET"])
 def register():
     #Recibimos los datos del Front
@@ -34,6 +56,7 @@ def register():
         return redirect(url_for("login"))
     return render_template ("register.html")
 
+#Ruta para logearte
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -51,50 +74,51 @@ def login():
             return redirect(url_for('login'))  
     return render_template('login.html')
 
+
+#Ruta para crear nueva receta
 @app.route("/recipe_new", methods=["POST", "GET"])
 def recipe_new():
-    #Recibimos los datos del Front
     if request.method == 'POST':
-        nombre_receta = request.form ["nombre_receta"]
-        descripcion_receta = request.form ["descripcion_receta"]
-        ingredientes = request.form ["ingredientes"]
-        # pepino, arroz, ajo
-        # que se separe por ',' cada ingrediente
-        # bucle que por cada ingrediente
-        # agregue a []
+        nombre_receta = request.form.get("nombre_receta")
+        descripcion_receta = request.form.get("descripcion_receta")
+        ingredientes = request.form.get("ingredientes")
         global current_user 
         user_id = current_user
-        print(user_id)
         receta_de_usuario = Receta(nombre_receta=nombre_receta,descripcion_receta=descripcion_receta,ingredientes=ingredientes, user_id=user_id)
         db.session.add(receta_de_usuario)
         db.session.commit()
         return redirect(url_for("home"))
-    return render_template ("receta.html")
+    return render_template ("recipe_new.html")
 
 
-#Ruta donde se ven todas las recetas
-@app.route("/home")
-def home():
-    return render_template ("home.html")
-
-#Ruta donde se ve la receta seleccionada
-@app.route("/recipe")
-def recipe():
-    render_template ("recipe.html")
-
-#Ruta para editar una receta
-@app.route("/recipe_edit")
-def recipe_edit():
-    render_template ("recipe_edit.html")
-
-#Ruta donde se eliminan las recetas
-@app.route("/recipe_del")
-def recipe_del():
-    pass
-
+#Ruta para ver tus recetas
 @app.route("/your_recipes")
 def your_recipes():
-    render_template ("your_recipes.html")
+    query_recetas = Receta.query.filter_by(user_id = current_user).all()
+    return render_template ("your_recipes.html", query_recetas=query_recetas)
+
+
+#Ruta para editar una receta
+@app.route("/recipe_edit/<id>", methods=['POST', 'GET'])
+def recipe_edit(id):
+    receta = Receta.query.get(id)
+    if request.method == 'POST':
+        receta.nombre_receta = request.form['nombre_receta']
+        receta.descripcion_receta = request.form['descripcion_receta']
+        receta.ingredientes = request.form['ingredientes']
+        db.session.commit()
+        return redirect(url_for("your_recipes"))
+    #lista_ingredientes = receta.ingredientes.split(",")
+    return render_template ("recipe_edit.html", receta=receta) #lista_ingredientes=lista_ingredientes)
+
+
+#Ruta donde se eliminan las recetas
+@app.route("/recipe_del/<id>")
+def recipe_del(id):
+    receta = Receta.query.get(id)
+    db.session.delete(receta)
+    db.session.commit()
+    return redirect (url_for("your_recipes"))
 
 
 ## Breakpoint ##
