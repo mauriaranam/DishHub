@@ -113,10 +113,12 @@ def recipe_edit(id):
 
 
 #Ruta donde se eliminan las recetas
-@app.route("/recipe_del")
-def recipe_del():
-    pass
-
+@app.route("/recipe_del/<id>")
+def recipe_del(id):
+    receta = Receta.query.get(id)
+    db.session.delete(receta)
+    db.session.commit()
+    return redirect (url_for("your_recipes"))
 
 
 ## Breakpoint ##
