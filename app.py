@@ -17,6 +17,24 @@ db.init_app(app)
 def index():
     return render_template("home.html")
 
+
+#Ruta donde se ven todas las recetas
+@app.route("/home")
+def home():
+    recetas = Receta.query.all()
+    print(recetas)
+    return render_template ("home.html",recetas=recetas)
+
+
+#Ruta donde se ve la receta seleccionada
+@app.route("/recipe/<id>")
+def recipe(id):
+    receta_buscada = Receta.query.get(id)
+    lista_ingredientes = receta_buscada.ingredientes.split(",")
+    print(lista_ingredientes)
+    return render_template ("recipe.html", receta_buscada=receta_buscada, lista_ingredientes=lista_ingredientes)
+
+#Ruta para registrarse
 @app.route("/register", methods=["POST", "GET"])
 def register():
     #Recibimos los datos del Front
@@ -38,50 +56,7 @@ def register():
         return redirect(url_for("login"))
     return render_template ("register.html")
 
-@app.route("/recipe_new", methods=["POST", "GET"])
-def recipe_new():
-    if request.method == 'POST':
-        nombre_receta = request.form.get("nombre_receta")
-        descripcion_receta = request.form.get("descripcion_receta")
-        ingredientes = request.form.get("ingredientes")
-        global current_user 
-        user_id = current_user
-        receta_de_usuario = Receta(nombre_receta=nombre_receta,descripcion_receta=descripcion_receta,ingredientes=ingredientes, user_id=user_id)
-        db.session.add(receta_de_usuario)
-        db.session.commit()
-        return redirect(url_for("home"))
-    return render_template ("recipe_new.html")
-
-
-#Ruta donde se ven todas las recetas
-@app.route("/home")
-def home():
-    recetas = Receta.query.all()
-    print(recetas)
-    return render_template ("home.html",recetas=recetas)
-
-#Ruta para editar una receta
-@app.route("/recipe_edit")
-def recipe_edit():
-    return render_template ("recipe_edit.html")
-
-#Ruta donde se eliminan las recetas
-@app.route("/recipe_del")
-def recipe_del():
-    pass
-
-#Ruta donde se ve la receta seleccionada
-@app.route("/recipe/<id>")
-def recipe(id):
-    receta_buscada = Receta.query.get(id)
-    lista_ingredientes = receta_buscada.ingredientes.split(",")
-    print(lista_ingredientes)
-    return render_template ("recipe.html", receta_buscada=receta_buscada, lista_ingredientes=lista_ingredientes)
-
-@app.route("/your_recipes")
-def your_recipes():
-    render_template ("your_recipes.html")
-
+#Ruta para logearte
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -98,6 +73,42 @@ def login():
         elif usuario_db is None:
             return redirect(url_for('login'))  
     return render_template('login.html')
+
+
+#Ruta para crear nueva receta
+@app.route("/recipe_new", methods=["POST", "GET"])
+def recipe_new():
+    if request.method == 'POST':
+        nombre_receta = request.form.get("nombre_receta")
+        descripcion_receta = request.form.get("descripcion_receta")
+        ingredientes = request.form.get("ingredientes")
+        global current_user 
+        user_id = current_user
+        receta_de_usuario = Receta(nombre_receta=nombre_receta,descripcion_receta=descripcion_receta,ingredientes=ingredientes, user_id=user_id)
+        db.session.add(receta_de_usuario)
+        db.session.commit()
+        return redirect(url_for("home"))
+    return render_template ("recipe_new.html")
+
+
+#Ruta para ver tus recetas
+@app.route("/your_recipes")
+def your_recipes():
+    return render_template ("your_recipes.html")
+
+
+#Ruta para editar una receta
+@app.route("/recipe_edit")
+def recipe_edit():
+    return render_template ("recipe_edit.html")
+
+
+#Ruta donde se eliminan las recetas
+@app.route("/recipe_del")
+def recipe_del():
+    pass
+
+
 
 ## Breakpoint ##
 if __name__ == "__main__":
