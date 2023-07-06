@@ -6,10 +6,11 @@ from models import db, User, Receta
 from flask_login import LoginManager, login_user, current_user, logout_user, login_required
 # Importamos funcion hasheadora para mayor seguridad
 from werkzeug.security import generate_password_hash
-#Importamos fechas
-from datetime import datetime
 import os
-
+# Importamos la libreria datetime
+from datetime import datetime
+# importamos nuestras funciones creadas
+from funciones import permiso_para_modificar_receta, permiso_para_eliminar_receta
 
 fecha_string = datetime.strftime(datetime.now(), '%b %d, %Y')
 
@@ -35,6 +36,12 @@ db.init_app(app)
 # Instanciamos LoginManager para conectar con la app
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
+
+
+# Creamos una funcion para manejar los usuarios logeados
+@login_manager.user_loader
+def load_user(id):
+    return User.query.get(int(id))
 
 
 # Ruta de landing page
@@ -109,15 +116,9 @@ def login():
             print(current_user)
             return redirect(url_for('home'))  
         else:
-            flash('Correo o contraseña incorrecta')
-
+            flash('Correo o contraseña incorrecta', category='error')
     return render_template('login.html')
 
-
-# Creamos una funcion para manejar los usuarios logeados
-@login_manager.user_loader
-def load_user(id):
-    return User.query.get(int(id))
 
 
 # Ruta para cerrar session
@@ -133,8 +134,6 @@ def logout():
 @login_required
 def recipe(id):
     receta_buscada = Receta.query.get(id)
-    # lista_ingredientes = receta_buscada.ingredientes.split(",")
-    # print(lista_ingredientes)
     return render_template ("recipe.html", receta_buscada=receta_buscada)
 
 
@@ -149,7 +148,6 @@ def recipe_new():
         colaboradores = 'mauri'
         user_id = current_user.id
         file = request.files['image']
-        
         # Verifica si se proporcionó un archivo
         if file:
             # Genera el nombre de archivo combinando el nombre de la receta y el ID de la receta
@@ -159,13 +157,10 @@ def recipe_new():
         else:
             # Si no se proporcionó un archivo, establece el image_path como None o una ruta predeterminada según tus necesidades
             image_path = None
-        
         receta_de_usuario = Receta(nombre_receta=nombre_receta, descripcion_receta=descripcion_receta, ingredientes=ingredientes, user_id=user_id, colaboradores=colaboradores, image_path=image_path)
         db.session.add(receta_de_usuario)
         db.session.commit()
-        
         return redirect(url_for("your_recipes"))
-    
     return render_template("recipe_new.html")
 
 
@@ -177,28 +172,41 @@ def your_recipes():
     return render_template ("your_recipes.html", query_recetas=query_recetas)
 
 
-#Ruta para editar una receta
-@app.route("/recipe_edit/<id>", methods=['POST', 'GET'])
+#Ruta para ver la receta de otro
+@app.route("/recipes_of/<id_usuario>")
 @login_required
-def recipe_edit(id):
-    receta = Receta.query.get(id)
-    if request.method == 'POST':
-        receta.nombre_receta = request.form['nombre_receta']
-        receta.descripcion_receta = request.form['descripcion_receta']
-        receta.ingredientes = request.form['ingredientes']
-        db.session.commit()
-        return redirect(url_for("your_recipes"))
-    #lista_ingredientes = receta.ingredientes.split(",")
-    return render_template ("recipe_edit.html", receta=receta) #lista_ingredientes=lista_ingredientes)
+def recipe_of_user(id_usuario):
+    query_recetas = Receta.query.filter_by(id=id_usuario).all()
+    if query_recetas:
+        return render_template ("your_recipes.html", query_recetas=query_recetas)
+    flash('Este usuario no existe :s')
+
+
+#Ruta para editar una receta
+@app.route("/recipe_edit/<receta_id>", methods=['POST', 'GET'])
+@login_required
+@permiso_para_modificar_receta
+def recipe_edit(receta_id):
+    receta = Receta.query.get(receta_id)
+    if receta:
+        if request.method == 'POST':
+            receta.nombre_receta = request.form['nombre_receta']
+            receta.descripcion_receta = request.form['descripcion_receta']
+            receta.ingredientes = request.form['ingredientes']
+            db.session.commit()
+            return redirect(url_for("your_recipes"))
+    return render_template ("recipe_edit.html", receta=receta)
 
 
 #Ruta donde se eliminan las recetas
-@app.route("/recipe_del/<id>")
+@app.route("/recipe_del/<receta_id>")
+@permiso_para_eliminar_receta
 @login_required
-def recipe_del(id):
-    receta = Receta.query.get(id)
+def recipe_del(receta_id):
+    receta = Receta.query.get(receta_id)
     db.session.delete(receta)
     db.session.commit()
+    flash('Receta eliminada correctamente', category='success')
     return redirect (url_for("your_recipes"))
 
 
