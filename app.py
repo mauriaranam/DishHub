@@ -20,12 +20,14 @@ app.config['SECRET_KEY'] = 'SuperSecretKeyxD'
 db.init_app(app)
 
 # Instanciamos LoginManager para conectar con la app
-login_manager = LoginManager(app)
+login_manager = LoginManager()
+login_manager.login_view('login')
+
 
 # Creamos una funcion para manejar los usuarios logeados
 @login_manager.user_loader
-def load_user(id_user):
-    return User.query.get(id_user)
+def load_user(id):
+    return User.query.get(int(id))
 
 # Ruta de landing page
 @app.route("/")
@@ -104,9 +106,16 @@ def login():
 
     return render_template('login.html')
 
+# Ruta para cerrar session
+@app.route('/logout', methods = ['POST'])
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
 
 #Ruta donde se ven todas las recetas
 @app.route("/home")
+@login_required
 def home():
     recetas = Receta.query.all()
     # print(recetas)
@@ -115,6 +124,7 @@ def home():
 
 #Ruta donde se ve la receta seleccionada
 @app.route("/recipe/<id>")
+@login_required
 def recipe(id):
     receta_buscada = Receta.query.get(id)
     lista_ingredientes = receta_buscada.ingredientes.split(",")
@@ -126,12 +136,13 @@ def recipe(id):
 
 #Ruta para crear nueva receta
 @app.route("/recipe_new", methods=["POST", "GET"])
+@login_required
 def recipe_new():
     if request.method == 'POST':
         nombre_receta = request.form.get("nombre_receta")
         descripcion_receta = request.form.get("descripcion_receta")
         ingredientes = request.form.get("ingredientes")
-        global current_user 
+ 
         user_id = current_user
         receta_de_usuario = Receta(nombre_receta=nombre_receta,descripcion_receta=descripcion_receta,ingredientes=ingredientes, user_id=user_id)
         db.session.add(receta_de_usuario)
@@ -142,6 +153,7 @@ def recipe_new():
 
 #Ruta para ver tus recetas
 @app.route("/your_recipes")
+@login_required
 def your_recipes():
     query_recetas = Receta.query.filter_by(user_id = current_user).all()
     return render_template ("your_recipes.html", query_recetas=query_recetas)
@@ -149,6 +161,7 @@ def your_recipes():
 
 #Ruta para editar una receta
 @app.route("/recipe_edit/<id>", methods=['POST', 'GET'])
+@login_required
 def recipe_edit(id):
     receta = Receta.query.get(id)
     if request.method == 'POST':
@@ -163,6 +176,7 @@ def recipe_edit(id):
 
 #Ruta donde se eliminan las recetas
 @app.route("/recipe_del/<id>")
+@login_required
 def recipe_del(id):
     receta = Receta.query.get(id)
     db.session.delete(receta)
