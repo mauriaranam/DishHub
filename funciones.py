@@ -11,11 +11,12 @@ def permiso_para_modificar_receta(func):
         # Verificar si la receta existe en la base de datos
         receta = Receta.query.get(receta_id)
         if not receta:
+            flash('La receta no existe o no tienes permisos para editar', category='error') 
             return redirect(url_for('home')) # Devuelve al home
 
 
-        if receta.id != current_user.id and not receta.es_usuario_colaborativo(current_user.username) and not current_user.rol('admin'):
-            flash('La receta no existe o no tienes permisos para editar') 
+        if receta.id != current_user.id and not receta.es_usuario_colaborativo(current_user.username) and not current_user != 'admin':
+            flash('La receta no existe o no tienes permisos para editar', category='error') 
             return redirect(url_for('home')) # Devuelve al home
 
         return func(*args, **kwargs)
@@ -30,11 +31,11 @@ def permiso_para_eliminar_receta(func):
         # Verificar si la receta existe en la base de datos
         receta = Receta.query.get(receta_id)
         if not receta:
-            flash('La receta no existe o no tienes permisos para editar')  # Devuelve un error 404 Not Found si la receta no existe
+            flash('La receta no existe o no tienes permisos para editar', category='error')  # Devuelve un error 404 Not Found si la receta no existe
             return redirect(url_for('home')) # Devuelve al home
 
         if receta.id != current_user.id and current_user.rol != 'admin':
-            flash('La receta no existe o no tienes permisos para editar')  # 
+            flash('La receta no existe o no tienes permisos para editar', category='error')  # 
             return redirect(url_for('home')) # Devuelve al home
         return func(*args, **kwargs)
 
