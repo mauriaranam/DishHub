@@ -20,13 +20,6 @@ class User(db.Model, UserMixin):
     rol = db.Column(db.String(15), default='gastronomo') # Hacemos que el rol default sea gastronomo
     recetas = db.relationship('Receta', backref = 'user')
 
-    def __init__ (self, username, correo_user, password, nombre,apellido):
-        self.username = username
-        self.correo_user = correo_user
-        self.password = password
-        self.nombre = nombre
-        self.apellido = apellido
-
     # Funcion que te permite confirmar contraseñá hasheada
     def confirmar_contraseña(self, contraseña):
         return check_password_hash(self.contraseña, contraseña)
@@ -40,14 +33,6 @@ class Receta(db.Model):
     colaboradores = db.Column(db.String(400)) #Almacena los colaboradores
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False) # Creador de la receta
     fecha_receta = db.Column(db.String, default=fecha_string)
-
-
-    def __init__ (self, nombre_receta, descripcion_receta,ingredientes, colaboradores, user_id):
-        self.nombre_receta = nombre_receta
-        self.descripcion_receta = descripcion_receta
-        self.ingredientes = ingredientes
-        self.colaboradores = colaboradores
-        self.user_id = user_id
 
 
     # Comprueba si un nombre de usuario se encuentra en la lista de colaboradores

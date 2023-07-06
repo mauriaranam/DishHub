@@ -1,60 +1,86 @@
 #Importancion de librerias  
-from flask import Flask, redirect, render_template, request, render_template, request, redirect, url_for
+from flask import Flask, redirect, render_template, request, render_template, request, redirect, url_for, flash
 # Importamos los modelos de la tablas
 from models import db, User, Receta
+# Importamos funciones de flask-login
+from flask_login import LoginManager, login_user, current_user
+# Importamos funcion hasheadora para mayor seguridad
+from werkzeug.security import generate_password_hash
 
+# Instanciamos Flask
 app = Flask(__name__)
 
-
-# configurar la base de datos SQLite
+# Configuraciones para la base de datos
+### Ver para implementar variable de entorno .env
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.sqlite3"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = 'SuperSecretKeyxD'
 
 # Inicializamos la base de datos
 db.init_app(app)
 
+# Instanciamos LoginManager para conectar con la app
+login_manager = LoginManager(app)
+
+# Creamos una funcion para manejar los usuarios logeados
+@login_manager.user_loader
+def load_user(id_user):
+    return User.query.get(id_user)
+
+# Ruta de landing page
 @app.route("/")
 def index():
-    return render_template("home.html")
-
-
-#Ruta donde se ven todas las recetas
-@app.route("/home")
-def home():
-    recetas = Receta.query.all()
-    print(recetas)
-    return render_template ("home.html",recetas=recetas)
-
-
-#Ruta donde se ve la receta seleccionada
-@app.route("/recipe/<id>")
-def recipe(id):
-    receta_buscada = Receta.query.get(id)
-    lista_ingredientes = receta_buscada.ingredientes.split(",")
-    print(lista_ingredientes)
-    return render_template ("recipe.html", receta_buscada=receta_buscada, lista_ingredientes=lista_ingredientes)
+    return 'Logeate en /login o crea tu cuenta en /register'
 
 #Ruta para registrarse
 @app.route("/register", methods=["POST", "GET"])
 def register():
-    #Recibimos los datos del Front
+    # Recibimos los datos del Front
     if request.method == 'POST':
-        username = request.form ["username"]
-        email = request.form ["correo_user"]
-        password = request.form ["password"]
-        nombre = request.form ["nombre"]
-        apellido = request.form ["apellido"]
-        usuario = User(username=username, correo_user=email, password=password, nombre=nombre,apellido=apellido)
-        #Agregamos a la db
-        #Agrego con
-        db.session.add(usuario)
-        #Y confirmo con
-        db.session.commit()
-        global current_user
-        current_user = usuario.id
-        print(current_user)
-        return redirect(url_for("login"))
-    return render_template ("register.html")
+        username = request.form.get("username")
+        email = request.form.get("correo_user")
+        password1 = request.form.get("password1")
+        password2 = request.form.get("password2")
+        nombre = request.form.get("nombre")
+        apellido = request.form.get("apellido")
+
+        # Hacemos la confirmación de creación de usuario
+        if User.query.filter_by(username=username).first():
+            flash('Este usuario ya existe uwu', category='error')
+        elif User.query.filter_by(correo_user=email).first():
+            flash('Este correo ya existe uwu', category='error')
+        elif len(username) < 4:
+            flash('Tu nombre de usuario debe ser mayor a 4 caracteres', category='error')
+        elif len(email) < 4:
+            flash('Tu correo debe ser mayor a 4 caracteres', category='error')
+        elif len(nombre) < 4:
+            flash('Tu nombre debe ser mayor a 4 caracteres', category='error')
+        elif len(apellido) < 4:
+            flash('Tu apellido debe ser mayor a 4 caracteres', category='error')
+        elif len(password1) < 3:
+            flash('Tu contraseña debe ser mayor a 3 caracteres', category='error')
+        elif password1 != password2:
+            flash('Las contraseñas no coinciden', category='error')
+        else:
+            password = generate_password_hash(password1, method='sha256')
+            print(username, email, password, nombre, apellido)
+        
+            user = User(username=username, correo_user=email, password=password, nombre=nombre, apellido=apellido)
+
+            # Agregamos a la db
+            db.session.add(user)
+            # Y confirmamos
+            db.session.commit()
+
+            # Dejamos el usuario logeado
+            login_user(user, remember=True)
+
+            flash('Usuario creado!', category='success')
+            
+            return redirect(url_for("login"))
+    
+    return render_template("register.html")
+
 
 #Ruta para logearte
 @app.route('/login', methods = ['GET', 'POST'])
@@ -73,6 +99,25 @@ def login():
         elif usuario_db is None:
             return redirect(url_for('login'))  
     return render_template('login.html')
+
+
+#Ruta donde se ven todas las recetas
+@app.route("/home")
+def home():
+    recetas = Receta.query.all()
+    print(recetas)
+    return render_template ("home.html",recetas=recetas)
+
+
+#Ruta donde se ve la receta seleccionada
+@app.route("/recipe/<id>")
+def recipe(id):
+    receta_buscada = Receta.query.get(id)
+    lista_ingredientes = receta_buscada.ingredientes.split(",")
+    print(lista_ingredientes)
+    return render_template ("recipe.html", receta_buscada=receta_buscada, lista_ingredientes=lista_ingredientes)
+
+
 
 
 #Ruta para crear nueva receta
