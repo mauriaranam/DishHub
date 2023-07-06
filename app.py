@@ -3,7 +3,7 @@ from flask import Flask, redirect, render_template, request, render_template, re
 # Importamos los modelos de la tablas
 from models import db, User, Receta
 # Importamos funciones de flask-login
-from flask_login import LoginManager, login_user, current_user
+from flask_login import LoginManager, login_user, current_user, logout_user, login_required
 # Importamos funcion hasheadora para mayor seguridad
 from werkzeug.security import generate_password_hash
 
@@ -62,8 +62,8 @@ def register():
         elif password1 != password2:
             flash('Las contraseñas no coinciden', category='error')
         else:
+            # Hasheamos la contraseña para mayor seguridad
             password = generate_password_hash(password1, method='sha256')
-            print(username, email, password, nombre, apellido)
         
             user = User(username=username, correo_user=email, password=password, nombre=nombre, apellido=apellido)
 
@@ -72,12 +72,12 @@ def register():
             # Y confirmamos
             db.session.commit()
 
-            # Dejamos el usuario logeado
+            # Recuerda que el usuario esta logeado
             login_user(user, remember=True)
 
             flash('Usuario creado!', category='success')
             
-            return redirect(url_for("login"))
+            return redirect(url_for("home"))
     
     return render_template("register.html")
 
@@ -86,18 +86,22 @@ def register():
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        correo_user = request.form ['correo_user']
-        password = request.form ['password']
-        usuario_db = User.query.filter_by(correo_user=correo_user).first()
-        if usuario_db is not None:
-            if usuario_db.password == password:
-                global current_user 
-                current_user = usuario_db.id
-                return redirect(url_for('home'))
-            else:
-                return redirect(url_for('login'))
-        elif usuario_db is None:
-            return redirect(url_for('login'))  
+        correo_user = request.form.get("correo_user")
+        password = request.form.get("password")
+
+        user = User.query.filter_by(correo_user=correo_user).first()
+
+        if user and user.confirmar_contraseña(password):
+            flash('Logeado correctamente', category='succes')
+            # Recuerda que el usuario esta logeado
+            login_user(user, remember=True)
+            print(current_user)
+
+            return redirect(url_for('home'))  
+
+        else:
+            flash('Correo o contraseña incorrecta')
+
     return render_template('login.html')
 
 
@@ -105,7 +109,7 @@ def login():
 @app.route("/home")
 def home():
     recetas = Receta.query.all()
-    print(recetas)
+    # print(recetas)
     return render_template ("home.html",recetas=recetas)
 
 
@@ -114,7 +118,7 @@ def home():
 def recipe(id):
     receta_buscada = Receta.query.get(id)
     lista_ingredientes = receta_buscada.ingredientes.split(",")
-    print(lista_ingredientes)
+    # print(lista_ingredientes)
     return render_template ("recipe.html", receta_buscada=receta_buscada, lista_ingredientes=lista_ingredientes)
 
 

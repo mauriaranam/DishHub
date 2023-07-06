@@ -21,8 +21,8 @@ class User(db.Model, UserMixin):
     recetas = db.relationship('Receta', backref = 'user')
 
     # Funcion que te permite confirmar contraseñá hasheada
-    def confirmar_contraseña(self, contraseña):
-        return check_password_hash(self.contraseña, contraseña)
+    def confirmar_contraseña(self, password):
+        return check_password_hash(self.password, password)
 
 
 class Receta(db.Model):
