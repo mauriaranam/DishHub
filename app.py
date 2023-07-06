@@ -169,27 +169,11 @@ def recipe_new():
     return render_template("recipe_new.html")
 
 
-#Ruta para subir la imagen de la receta
-@app.route('/upload', methods=['POST'])
-def upload():
-    file = request.files['image']
-    if file:
-        receta = Receta.query.get(3)  # Obtén la receta de la base de datos
-        nombre_receta = receta.nombre_receta  # Obtén el nombre de la receta desde la base de datos
-        # Genera el nombre de archivo combinando el nombre de la receta y el ID de la receta
-        filename = f'{nombre_receta}_{current_user.id}.jpg'  # Cambia la extensión según el formato de imagen que desees
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))  # Guarda el archivo en el directorio de uploads
-        # Actualiza el campo image_path en el modelo Recipe con el nombre del archivo
-        receta.image_path = filename
-        db.session.commit()
-        # Resto del código para el procesamiento de la receta
-        return render_template("recipe_new.html")
-
 #Ruta para ver tus recetas
 @app.route("/your_recipes")
 @login_required
 def your_recipes():
-    query_recetas = Receta.query.filter_by(id=current_user.id).all()
+    query_recetas = Receta.query.filter_by(user_id=current_user.id).all()
     return render_template ("your_recipes.html", query_recetas=query_recetas)
 
 
