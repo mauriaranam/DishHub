@@ -109,7 +109,7 @@ def login():
             return redirect(url_for('home'))  
 
         else:
-            flash('Correo o contraseña incorrecta')
+            flash('Correo o contraseña incorrecta', category='error')
 
     return render_template('login.html')
 
@@ -133,8 +133,6 @@ def home():
 @login_required
 def recipe(id):
     receta_buscada = Receta.query.get(id)
-    # lista_ingredientes = receta_buscada.ingredientes.split(",")
-    # print(lista_ingredientes)
     return render_template ("recipe.html", receta_buscada=receta_buscada)
 
 #Ruta para crear nueva receta
@@ -159,7 +157,7 @@ def recipe_new():
 @app.route("/your_recipes")
 @login_required
 def your_recipes():
-    query_recetas = Receta.query.filter_by(id=current_user.id).all()
+    query_recetas = Receta.query.filter_by(user_id=current_user.id).all()
     return render_template ("your_recipes.html", query_recetas=query_recetas)
 
 #Ruta para ver la receta de otro
@@ -177,12 +175,13 @@ def recipe_of_user(id_usuario):
 @permiso_para_modificar_receta
 def recipe_edit(receta_id):
     receta = Receta.query.get(receta_id)
-    if request.method == 'POST':
-        receta.nombre_receta = request.form['nombre_receta']
-        receta.descripcion_receta = request.form['descripcion_receta']
-        receta.ingredientes = request.form['ingredientes']
-        db.session.commit()
-        return redirect(url_for("your_recipes"))
+    if receta:
+        if request.method == 'POST':
+            receta.nombre_receta = request.form['nombre_receta']
+            receta.descripcion_receta = request.form['descripcion_receta']
+            receta.ingredientes = request.form['ingredientes']
+            db.session.commit()
+            return redirect(url_for("your_recipes"))
 
     return render_template ("recipe_edit.html", receta=receta)
 
@@ -192,9 +191,10 @@ def recipe_edit(receta_id):
 @permiso_para_eliminar_receta
 @login_required
 def recipe_del(receta_id):
-    receta = Receta.query.get(id)
+    receta = Receta.query.get(receta_id)
     db.session.delete(receta)
     db.session.commit()
+    flash('Receta eliminada correctamente', category='success')
     return redirect (url_for("your_recipes"))
 
 
