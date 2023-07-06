@@ -15,7 +15,7 @@ def permiso_para_modificar_receta(func):
             return redirect(url_for('home')) # Devuelve al home
 
 
-        if receta.user_id != current_user.id and not receta.es_usuario_colaborativo(current_user.username) and current_user != 'admin':
+        if receta.user_id != current_user.id or not receta.es_usuario_colaborativo(current_user.username) or current_user.rol != 'admin':
             flash('La receta no existe o no tienes permisos para editar', category='error') 
             return redirect(url_for('home')) # Devuelve al home
 
@@ -34,7 +34,7 @@ def permiso_para_eliminar_receta(func):
             flash('La receta no existe o no tienes permisos para editar', category='error')  # Devuelve un error 404 Not Found si la receta no existe
             return redirect(url_for('home')) # Devuelve al home
 
-        if receta.user_id != current_user.id and current_user.rol != 'admin':
+        if receta.user_id != current_user.id or current_user.rol != 'admin':
             flash('La receta no existe o no tienes permisos para editar', category='error')  # 
             return redirect(url_for('home')) # Devuelve al home
         return func(*args, **kwargs)
