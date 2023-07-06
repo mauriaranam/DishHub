@@ -1,21 +1,7 @@
 {% extends 'base.html' %}
 
 {% block body %}
-    <!--
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/typography'),
-      require('@tailwindcss/aspect-ratio'),
-    ],
-  }
-  ```
--->
+
 <div class="bg-white">
   <div class="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
     <div class="lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8">
@@ -120,11 +106,7 @@
                 </button>
               </h3>
               <div class="prose prose-sm pb-6" id="disclosure-1">
-                <ul role="list"> 
-                  {% for ingrediente in lista_ingredientes %}
-                    <li class="italic text-black-500">• {{ingrediente}}</li>
-                  {% endfor %}
-                </ul>
+                  <pre>{{ receta_buscada.ingredientes}} </pre>
               </div>
             </div>
             <!-- More sections... -->
