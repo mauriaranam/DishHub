@@ -33,6 +33,7 @@ class Receta(db.Model):
     colaboradores = db.Column(db.String(400)) #Almacena los colaboradores
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False) # Creador de la receta
     fecha_receta = db.Column(db.String, default=fecha_string)
+    image_path = db.Column(db.String(200), nullable=True)  # Almacena la ruta de la imagen
 
 
     # Comprueba si un nombre de usuario se encuentra en la lista de colaboradores

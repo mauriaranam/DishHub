@@ -14,6 +14,7 @@
         <h1 class="italic text-black-500">- {{receta.nombre_receta}}</h1>
         <li class="italic text-black-500">{{receta.descripcion_receta}}</li>
         <li class="italic text-black-500">{{receta.ingredientes}}</li>
+        <img src="{{ receta.image_path }}" alt="Foto de: {{receta.nombre_receta}}">
         <a href="/recipe_edit/{{receta.id}}" class="text-sm font-semibold leading-6 text-gray-900">Editar Receta</a>
         <h1> ----- </h1>
         {% endfor %}
