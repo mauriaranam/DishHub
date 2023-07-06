@@ -7,6 +7,12 @@ from flask_login import LoginManager, login_user, current_user, logout_user, log
 # Importamos funcion hasheadora para mayor seguridad
 from werkzeug.security import generate_password_hash
 
+from datetime import datetime
+
+
+fecha_string = datetime.strftime(datetime.now(), '%b %d, %Y')
+
+
 # Instanciamos Flask
 app = Flask(__name__)
 
@@ -20,8 +26,8 @@ app.config['SECRET_KEY'] = 'SuperSecretKeyxD'
 db.init_app(app)
 
 # Instanciamos LoginManager para conectar con la app
-login_manager = LoginManager()
-login_manager.login_view('login')
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
 
 
 # Creamos una funcion para manejar los usuarios logeados
@@ -107,7 +113,7 @@ def login():
     return render_template('login.html')
 
 # Ruta para cerrar session
-@app.route('/logout', methods = ['POST'])
+@app.route('/logout', methods = ['GET', 'POST'])
 @login_required
 def logout():
     logout_user()
@@ -115,7 +121,6 @@ def logout():
 
 #Ruta donde se ven todas las recetas
 @app.route("/home")
-@login_required
 def home():
     recetas = Receta.query.all()
     # print(recetas)
@@ -127,9 +132,9 @@ def home():
 @login_required
 def recipe(id):
     receta_buscada = Receta.query.get(id)
-    lista_ingredientes = receta_buscada.ingredientes.split(",")
+    # lista_ingredientes = receta_buscada.ingredientes.split(",")
     # print(lista_ingredientes)
-    return render_template ("recipe.html", receta_buscada=receta_buscada, lista_ingredientes=lista_ingredientes)
+    return render_template ("recipe.html", receta_buscada=receta_buscada)
 
 
 
@@ -142,9 +147,10 @@ def recipe_new():
         nombre_receta = request.form.get("nombre_receta")
         descripcion_receta = request.form.get("descripcion_receta")
         ingredientes = request.form.get("ingredientes")
+        colaboradores = 'mauri'
  
-        user_id = current_user
-        receta_de_usuario = Receta(nombre_receta=nombre_receta,descripcion_receta=descripcion_receta,ingredientes=ingredientes, user_id=user_id)
+        user_id = current_user.id
+        receta_de_usuario = Receta(nombre_receta=nombre_receta,descripcion_receta=descripcion_receta,ingredientes=ingredientes, user_id=user_id, fecha_receta=fecha_string, colaboradores=colaboradores)
         db.session.add(receta_de_usuario)
         db.session.commit()
         return redirect(url_for("home"))
@@ -155,7 +161,7 @@ def recipe_new():
 @app.route("/your_recipes")
 @login_required
 def your_recipes():
-    query_recetas = Receta.query.filter_by(user_id = current_user).all()
+    query_recetas = Receta.query.filter_by(id=current_user.id).all()
     return render_template ("your_recipes.html", query_recetas=query_recetas)
 
 
