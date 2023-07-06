@@ -167,8 +167,9 @@ def your_recipes():
 @login_required
 def recipe_of_user(id_usuario):
     query_recetas = Receta.query.filter_by(id=id_usuario).all()
-    return render_template ("your_recipes.html", query_recetas=query_recetas)
-
+    if query_recetas:
+        return render_template ("your_recipes.html", query_recetas=query_recetas)
+    flash('Este usuario no existe :s')
 
 #Ruta para editar una receta
 @app.route("/recipe_edit/<receta_id>", methods=['POST', 'GET'])
