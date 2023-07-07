@@ -188,6 +188,8 @@ def recipe_of_user(id_usuario):
 @permiso_para_modificar_receta
 def recipe_edit(receta_id):
     receta = Receta.query.get(receta_id)
+    print(receta)
+    
     if receta:
         if request.method == 'POST':
             receta.nombre_receta = request.form['nombre_receta']
@@ -195,6 +197,9 @@ def recipe_edit(receta_id):
             receta.ingredientes = request.form['ingredientes']
             db.session.commit()
             return redirect(url_for("your_recipes"))
+    else:
+        flash('La receta no existe', category='error')
+        return redirect(url_for('home'))
     return render_template ("recipe_edit.html", receta=receta)
 
 

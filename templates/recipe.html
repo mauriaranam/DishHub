@@ -76,7 +76,7 @@
         <div class="mt-10 flex">
           {% if current_user.is_authenticated %}
           {% if current_user.rol == 'admin' or receta_buscada.user_id == current_user.id or current_user.username in receta_buscada.colaboradores.split(',') %}
-          <a href="/recipe_edit/{{receta_buscada.user_id}}">
+          <a href="/recipe_edit/{{receta_buscada.id}}">
             <button type="submit" class="flex max-w-xs flex-1 items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 sm:w-full">Editar</button>
           </a>
           {% endif %}
