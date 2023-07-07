@@ -16,11 +16,10 @@ fecha_string = datetime.strftime(datetime.now(), '%b %d, %Y')
 
 
 # Instanciamos Flask
-app = Flask(__name__, static_folder='uploads')
+app = Flask(__name__, static_folder='static')
 
 
-app.config['UPLOAD_FOLDER'] = 'uploads'
-
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
 
 # Configuraciones para la base de datos
 ### Ver para implementar variable de entorno .env
@@ -54,7 +53,7 @@ def index():
 @app.route("/home")
 def home():
     recetas = Receta.query.all()
-    # print(recetas)
+    print(recetas)
     return render_template ("home.html",recetas=recetas)
 
 
@@ -134,6 +133,7 @@ def logout():
 @login_required
 def recipe(id):
     receta_buscada = Receta.query.get(id)
+    print(receta_buscada.image_path)
     return render_template ("recipe.html", receta_buscada=receta_buscada)
 
 
@@ -153,7 +153,7 @@ def recipe_new():
             # Genera el nombre de archivo combinando el nombre de la receta y el ID de la receta
             filename = f'{nombre_receta}_{current_user.id}.jpg'  # Cambia la extensión según el formato de imagen que desees
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))  # Guarda el archivo en el directorio de uploads
-            image_path = os.path.join('/uploads', filename)
+            image_path = os.path.join('static/uploads', filename)
         else:
             # Si no se proporcionó un archivo, establece el image_path como None o una ruta predeterminada según tus necesidades
             image_path = None
@@ -203,7 +203,7 @@ def recipe_edit(receta_id):
                 # Genera el nombre de archivo combinando el nombre de la receta y el ID de la receta
                 filename = f'{receta.nombre_receta}_{current_user.id}.jpg'  # Cambia la extensión según el formato de imagen que desees
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))  # Guarda el archivo en el directorio de uploads
-                image_path = os.path.join('/uploads', filename)
+                image_path = os.path.join('static/uploads', filename)
                 receta.image_path = image_path
             else:
                 # Si no se proporcionó un archivo, establece el image_path como None o una ruta predeterminada según tus necesidades

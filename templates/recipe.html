@@ -22,7 +22,7 @@
         <div class="aspect-h-1 aspect-w-1 w-full">
           <!-- Tab panel, show/hide based on tab state. -->
           <div id="tabs-1-panel-1" aria-labelledby="tabs-1-tab-1" role="tabpanel" tabindex="0">
-            <img src="{{ receta_buscada.image_path }}" alt="Angled front view with bag zipped and handles upright." class="h-full w-full object-cover object-center sm:rounded-lg">
+            <img src="{{ receta_buscada.image_path }}" alt="Foto de la receta" class="h-full w-full object-cover object-center sm:rounded-lg">
           </div>
 
           <!-- More images... -->
@@ -36,8 +36,7 @@
         <div class="mb-5">
           <p class="text-ls text-right tracking-tight text-gray-400">
             Hecho por: 
-            <a href="{{ url_for('recipe_of_user', id_usuario=receta_buscada.user.id) }}">
-               
+            <a href="{{ url_for('recipe_of_user', id_usuario=receta_buscada.user.id) }}">             
               <span class="underline">{{ receta_buscada.user.username }}
             </a>
           </p>
