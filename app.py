@@ -110,7 +110,7 @@ def login():
         password = request.form.get("password")
         user = User.query.filter_by(correo_user=correo_user).first()
         if user and user.confirmar_contraseña(password):
-            flash('Logeado correctamente', category='succes')
+            flash(f'Bienvenidx de vuelta {user.nombre} :)', category='succes')
             # Recuerda que el usuario esta logeado
             login_user(user, remember=True)
             print(current_user)
@@ -176,10 +176,11 @@ def your_recipes():
 @app.route("/recipes_of/<id_usuario>")
 @login_required
 def recipe_of_user(id_usuario):
-    query_recetas = Receta.query.filter_by(id=id_usuario).all()
+    query_recetas = Receta.query.filter_by(user_id=id_usuario).all()
     if query_recetas:
         return render_template ("your_recipes.html", query_recetas=query_recetas)
-    flash('Este usuario no existe :s')
+    else:
+        flash('Este usuario no existe :s')
 
 
 #Ruta para editar una receta
