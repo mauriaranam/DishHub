@@ -110,7 +110,7 @@ def login():
         password = request.form.get("password")
         user = User.query.filter_by(correo_user=correo_user).first()
         if user and user.confirmar_contraseña(password):
-            flash('Logeado correctamente', category='succes')
+            flash(f'Bienvenidx de vuelta {user.nombre} :)', category='succes')
             # Recuerda que el usuario esta logeado
             login_user(user, remember=True)
             print(current_user)
@@ -176,10 +176,11 @@ def your_recipes():
 @app.route("/recipes_of/<id_usuario>")
 @login_required
 def recipe_of_user(id_usuario):
-    query_recetas = Receta.query.filter_by(id=id_usuario).all()
+    query_recetas = Receta.query.filter_by(user_id=id_usuario).all()
     if query_recetas:
         return render_template ("your_recipes.html", query_recetas=query_recetas)
-    flash('Este usuario no existe :s')
+    else:
+        flash('Este usuario no existe :s')
 
 
 #Ruta para editar una receta
@@ -188,15 +189,33 @@ def recipe_of_user(id_usuario):
 @permiso_para_modificar_receta
 def recipe_edit(receta_id):
     receta = Receta.query.get(receta_id)
+    print(receta)
+    
     if receta:
         if request.method == 'POST':
             receta.nombre_receta = request.form['nombre_receta']
             receta.descripcion_receta = request.form['descripcion_receta']
             receta.ingredientes = request.form['ingredientes']
+
+            file = request.files['image']
+            # Verifica si se proporcionó un archivo
+            if file:
+                # Genera el nombre de archivo combinando el nombre de la receta y el ID de la receta
+                filename = f'{receta.nombre_receta}_{current_user.id}.jpg'  # Cambia la extensión según el formato de imagen que desees
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))  # Guarda el archivo en el directorio de uploads
+                image_path = os.path.join('/uploads', filename)
+                receta.image_path = image_path
+            else:
+                # Si no se proporcionó un archivo, establece el image_path como None o una ruta predeterminada según tus necesidades
+                image_path = None
+
             db.session.commit()
             print(receta)
             return redirect(url_for("your_recipes"))
-    return render_template ("recipe_edit.html", receta=receta)
+    else:
+        flash('La receta no existe', category='error')
+        return redirect(url_for('home'))
+    return render_template("recipe_edit.html", receta=receta)
 
 
 #Ruta donde se eliminan las recetas

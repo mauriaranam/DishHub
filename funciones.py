@@ -11,15 +11,19 @@ def permiso_para_modificar_receta(func):
         # Verificar si la receta existe en la base de datos
         receta = Receta.query.get(receta_id)
         if not receta:
-            flash('La receta no existe o no tienes permisos para editar', category='error') 
+            flash('La receta no existe', category='error') 
+            return redirect(url_for('home')) # Devuelve al home
+            
+        if receta.user_id == current_user.id or receta.es_usuario_colaborativo(current_user.username) or current_user.rol == 'admin':
+            return func(*args, **kwargs)
+        
+        else:
+            flash('no tienes permisos para editar', category='error') 
             return redirect(url_for('home')) # Devuelve al home
 
 
-        if receta.user_id != current_user.id and not receta.es_usuario_colaborativo(current_user.username) and current_user != 'admin':
-            flash('La receta no existe o no tienes permisos para editar', category='error') 
-            return redirect(url_for('home')) # Devuelve al home
 
-        return func(*args, **kwargs)
+        
 
     return decorador
 
@@ -31,11 +35,11 @@ def permiso_para_eliminar_receta(func):
         # Verificar si la receta existe en la base de datos
         receta = Receta.query.get(receta_id)
         if not receta:
-            flash('La receta no existe o no tienes permisos para editar', category='error')  # Devuelve un error 404 Not Found si la receta no existe
+            flash('La receta no existe para eliminar', category='error')  # Devuelve un error 404 Not Found si la receta no existe
             return redirect(url_for('home')) # Devuelve al home
 
-        if receta.user_id != current_user.id and current_user.rol != 'admin':
-            flash('La receta no existe o no tienes permisos para editar', category='error')  # 
+        if receta.user_id != current_user.id or current_user.rol != 'admin':
+            flash('no tienes permisos para eliminar', category='error')  # 
             return redirect(url_for('home')) # Devuelve al home
         return func(*args, **kwargs)
 

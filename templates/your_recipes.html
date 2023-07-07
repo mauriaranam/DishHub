@@ -4,40 +4,36 @@
 
 
 {% block body %}
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Mis Recetas</title>
-    </head>
-    <body>
-        <h1>Mis Recetas</h1>
-        {% for receta in query_recetas %}
-        <h1 class="italic text-black-500">- {{receta.nombre_receta}}</h1>
-        <li class="italic text-black-500">{{receta.descripcion_receta}}</li>
-        <li class="italic text-black-500">{{receta.ingredientes}}</li>
-        <img src="{{ receta.image_path }}" alt="Foto de: {{receta.nombre_receta}}">
-        <a href="/recipe_edit/{{receta.id}}" class="text-sm font-semibold leading-6 text-gray-900">Editar Receta</a>
-        <h1> ----- </h1>
-        {% endfor %}
+<div class="bg-white">
+    <div class="mx-auto max-w-7xl overflow-hidden px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+        <div class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8">
+            {% for receta in query_recetas %}
+            <div>
+
+                <a href="/recipe/{{receta.id}}" class="group text-sm">
+                    <div class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-100 group-hover:opacity-75">
+                        
+                        <img src="{{ receta.image_path }}" alt="Foto">
+                        
+                    </div>
+                    <h3 class="mt-4 font-medium text-gray-900">{{receta.nombre_receta}}</h3>
+                    <p class="italic text-gray-500">{{receta.descripcion_receta}}</p>
+                </a>
+                {% if current_user.is_authenticated %}
+                {% if current_user.rol == 'admin' or receta.user_id == current_user.id or current_user.username in receta.colaboradores.split(',') %}
+                <a href="/recipe_edit/{{receta.id}}">
+                    <button type="button" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Edit</button>
+                </a>    
+                {% endif %}
+                {% endif %}
+                
+            
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    </body>
-    </html>
+ 
 {% endblock %}
