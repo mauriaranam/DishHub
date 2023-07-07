@@ -34,7 +34,14 @@
         <h1 class="text-3xl font-bold tracking-tight text-gray-900">{{receta_buscada.nombre_receta}}</h1>
 
         <div class="mb-5">
-          <p class="text-ls text-right tracking-tight text-gray-400">Hecho por: {{receta_buscada.user.username}}</p>
+          <p class="text-ls text-right tracking-tight text-gray-400">
+            Hecho por: 
+            <a href="{{ url_for('recipe_of_user', id_usuario=receta_buscada.user.id) }}">
+               
+              <span class="underline">{{ receta_buscada.user.username }}
+            </a>
+          </p>
+          
       </div>
 
         <div class="mt-6">
