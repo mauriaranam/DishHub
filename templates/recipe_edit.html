@@ -5,7 +5,7 @@
 
 {% block body %}
 <!-- Hay que traer los datos a editar de la receta -->
-<form action="/recipe_edit/{{receta.id}}" method="POST">
+<form action="/recipe_edit/{{receta.id}}" method="POST" enctype="multipart/form-data">
     <div class="bg-white">
         <div class="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
             <div class="lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8">
@@ -17,8 +17,7 @@
                         </svg>
                         <p class="mt-1 text-sm text-gray-500">¡¡Subi la foto del resultado!!</p>
                         <div class="mt-6">
-                            <form action="/recipe_new" method="POST" value="receta.image_path" enctype="multipart/form-data">
-                                <input type="file" name="image" value="receta.image_path">
+                            <input required type="file" value="{{receta.path_image}}" name="image">
                         </div>
                     </div>
                     
@@ -27,7 +26,6 @@
                 <!-- Product info -->
                 <div class="mt-10 px-4 sm:mt-16 sm:px-0 lg:mt-0">
                     <div class="mb-5">
-
                         <p class="text-ls text-right tracking-tight text-gray-400">Hecho por: {{receta.user.username}}</p>
                     </div>
 

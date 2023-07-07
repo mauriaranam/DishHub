@@ -195,12 +195,25 @@ def recipe_edit(receta_id):
             receta.nombre_receta = request.form['nombre_receta']
             receta.descripcion_receta = request.form['descripcion_receta']
             receta.ingredientes = request.form['ingredientes']
+
+            file = request.files['image']
+            # Verifica si se proporcionó un archivo
+            if file:
+                # Genera el nombre de archivo combinando el nombre de la receta y el ID de la receta
+                filename = f'{receta.nombre_receta}_{current_user.id}.jpg'  # Cambia la extensión según el formato de imagen que desees
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))  # Guarda el archivo en el directorio de uploads
+                image_path = os.path.join('/uploads', filename)
+                receta.image_path = image_path
+            else:
+                # Si no se proporcionó un archivo, establece el image_path como None o una ruta predeterminada según tus necesidades
+                image_path = None
+
             db.session.commit()
             return redirect(url_for("your_recipes"))
     else:
         flash('La receta no existe', category='error')
         return redirect(url_for('home'))
-    return render_template ("recipe_edit.html", receta=receta)
+    return render_template("recipe_edit.html", receta=receta)
 
 
 #Ruta donde se eliminan las recetas
