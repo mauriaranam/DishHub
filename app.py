@@ -194,6 +194,7 @@ def recipe_edit(receta_id):
             receta.descripcion_receta = request.form['descripcion_receta']
             receta.ingredientes = request.form['ingredientes']
             db.session.commit()
+            print(receta)
             return redirect(url_for("your_recipes"))
     return render_template ("recipe_edit.html", receta=receta)
 
