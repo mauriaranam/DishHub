@@ -10,7 +10,7 @@ import os
 # Importamos la libreria datetime
 from datetime import datetime
 # importamos nuestras funciones creadas
-from funciones import permiso_para_modificar_receta, permiso_para_eliminar_receta
+from funciones import permiso_para_modificar_receta, permiso_para_eliminar_receta, modo_admin
 
 fecha_string = datetime.strftime(datetime.now(), '%b %d, %Y')
 
@@ -120,6 +120,7 @@ def login():
 
 @app.route("/admin", methods=['GET', 'POST'])
 @login_required
+@modo_admin
 def admin():
     users = User.query.all()
     print(users)
@@ -236,7 +237,7 @@ def recipe_del(receta_id):
 #Ruta para editar un usuario
 @app.route("/user_edit/<id>", methods=['POST', 'GET'])
 @login_required
-#@admin
+@modo_admin
 def user_edit(id):
     user = User.query.get(id)
     print(user)
@@ -257,14 +258,11 @@ def user_edit(id):
 
 #Ruta donde se eliminan los usuarios
 @app.route("/user_del/<id>")
-#@admin
+@modo_admin
 @login_required
 def user_del(id):
-    user = User.query.get(id)
-    recetas = Receta.query.filter_by(user_id=id).all()
-    for receta in recetas:
-        db.session.delete(receta)
-    db.session.delete(user)
+    User.query.filter_by(id=id).delete()
+    Receta.query.filter_by(user_id=id).delete()
     db.session.commit()
     flash('Usuario eliminado correctamente', category='success')
     return redirect (url_for("admin"))
