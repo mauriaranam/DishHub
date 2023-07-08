@@ -60,6 +60,9 @@ def home():
 #Ruta para registrarse
 @app.route("/register", methods=["POST", "GET"])
 def register():
+    if current_user.is_authenticated:
+        flash(f'Ya estas logeado {current_user.nombre}! :)')
+        return redirect(url_for('home'))
     # Recibimos los datos del Front
     if request.method == 'POST':
         username = request.form.get("username")
@@ -104,6 +107,9 @@ def register():
 #Ruta para logearte
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if current_user.is_authenticated:
+        flash(f'Ya estas logeado {current_user.nombre}! :)')
+        return redirect(url_for('home'))
     if request.method == 'POST':
         correo_user = request.form.get("correo_user")
         password = request.form.get("password")
