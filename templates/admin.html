@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block tittle %} Panel de Admin {% endblock %}
+
+
+{% block body %}
+
+
+<div class="bg-white">
+    <div class="mx-auto max-w-7xl overflow-hidden px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+        <div class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8">
+            {% for user in users %}
+            <div>
+                <h3 class="mt-4 font-medium text-gray-900">{{user.username}}</h3>
+                <p class="italic text-gray-500">{{user.nombre}}</p>
+                <p class="italic text-gray-500">{{user.apellido}}</p>
+                <p class="italic text-gray-500">{{user.rol}}</p> 
+                <p> ------ </p>
+                <a href="user_edit/{{user.id}}">Editar</a>
+                <p> ------ </p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

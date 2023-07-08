@@ -10,7 +10,7 @@ import os
 # Importamos la libreria datetime
 from datetime import datetime
 # importamos nuestras funciones creadas
-from funciones import permiso_para_modificar_receta, permiso_para_eliminar_receta
+from funciones import permiso_para_modificar_receta, permiso_para_eliminar_receta, modo_admin
 
 fecha_string = datetime.strftime(datetime.now(), '%b %d, %Y')
 
@@ -102,7 +102,7 @@ def register():
 
 
 #Ruta para logearte
-@app.route('/login', methods = ['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         correo_user = request.form.get("correo_user")
@@ -118,7 +118,14 @@ def login():
             flash('Correo o contraseña incorrecta', category='error')
     return render_template('login.html')
 
-
+@app.route("/admin", methods=['GET', 'POST'])
+@login_required
+@modo_admin
+def admin():
+    users = User.query.all()
+    print(users)
+    print(current_user.username)
+    return render_template("admin.html", users=users)
 
 # Ruta para cerrar session
 @app.route('/logout', methods = ['GET', 'POST'])
@@ -126,7 +133,6 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('login'))
-
 
 #Ruta donde se ve la receta seleccionada
 @app.route("/recipe/<id>")
@@ -196,7 +202,6 @@ def recipe_edit(receta_id):
             receta.nombre_receta = request.form['nombre_receta']
             receta.descripcion_receta = request.form['descripcion_receta']
             receta.ingredientes = request.form['ingredientes']
-
             file = request.files['image']
             # Verifica si se proporcionó un archivo
             if file:
@@ -208,7 +213,6 @@ def recipe_edit(receta_id):
             else:
                 # Si no se proporcionó un archivo, establece el image_path como None o una ruta predeterminada según tus necesidades
                 image_path = None
-
             db.session.commit()
             print(receta)
             return redirect(url_for("your_recipes"))
@@ -228,6 +232,40 @@ def recipe_del(receta_id):
     db.session.commit()
     flash('Receta eliminada correctamente', category='success')
     return redirect (url_for("your_recipes"))
+
+
+#Ruta para editar un usuario
+@app.route("/user_edit/<id>", methods=['POST', 'GET'])
+@login_required
+@modo_admin
+def user_edit(id):
+    user = User.query.get(id)
+    print(user)
+    if user:
+        if request.method == 'POST':
+            user.username = request.form['username']
+            user.nombre = request.form['nombre']
+            user.apellido = request.form['apellido']
+            user.rol = request.form['rol']
+            db.session.commit()
+            print(user)
+            return redirect(url_for("admin"))
+    else:
+        flash('El usuario no existe', category='error')
+        return redirect(url_for('admin'))
+    return render_template("user_edit.html", user=user)
+
+
+#Ruta donde se eliminan los usuarios
+@app.route("/user_del/<id>")
+@modo_admin
+@login_required
+def user_del(id):
+    User.query.filter_by(id=id).delete()
+    Receta.query.filter_by(user_id=id).delete()
+    db.session.commit()
+    flash('Usuario eliminado correctamente', category='success')
+    return redirect (url_for("admin"))
 
 
 ## Breakpoint ##

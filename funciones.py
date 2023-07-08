@@ -1,7 +1,7 @@
 from functools import wraps
 from flask import flash, redirect, url_for
 from flask_login import current_user
-from models import Receta
+from models import Receta, User
 
 def permiso_para_modificar_receta(func):
     @wraps(func)
@@ -43,5 +43,17 @@ def permiso_para_eliminar_receta(func):
             return redirect(url_for('home')) # Devuelve al home
         return func(*args, **kwargs)
 
+    return decorador
+
+def modo_admin(func):
+    @wraps(func)
+    def decorador(*args, **kwargs):
+        id = kwargs.get('id')
+        # Verificar si la receta existe en la base de datos
+        user = User.query.get(id)
+        if current_user.rol != 'admin':
+            flash('no tienes los permisos', category='error') 
+            return redirect(url_for('home')) # Devuelve al home
+        return func(*args, **kwargs)
     return decorador
 
