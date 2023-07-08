@@ -12,8 +12,6 @@ from datetime import datetime
 # importamos nuestras funciones creadas
 from funciones import permiso_para_modificar_receta, permiso_para_eliminar_receta, modo_admin
 
-fecha_string = datetime.strftime(datetime.now(), '%b %d, %Y')
-
 
 # Instanciamos Flask
 app = Flask(__name__, static_folder='static')
@@ -153,8 +151,9 @@ def recipe_new():
         ingredientes = request.form.get("ingredientes")
         colaboradores = 'mauri'
         user_id = current_user.id
-        file = request.files['image']
-        # Verifica si se proporcionó un archivo
+        file = request.files['image']    
+        fecha_actual = datetime.strftime(datetime.now(), '%d, %b, %Y')
+            # Verifica si se proporcionó un archivo
         if file:
             # Genera el nombre de archivo combinando el nombre de la receta y el ID de la receta
             filename = f'{nombre_receta}_{current_user.id}.jpg'  # Cambia la extensión según el formato de imagen que desees
@@ -163,7 +162,7 @@ def recipe_new():
         else:
             # Si no se proporcionó un archivo, establece el image_path como None o una ruta predeterminada según tus necesidades
             image_path = None
-        receta_de_usuario = Receta(nombre_receta=nombre_receta, descripcion_receta=descripcion_receta, ingredientes=ingredientes, user_id=user_id, colaboradores=colaboradores, image_path=image_path)
+        receta_de_usuario = Receta(nombre_receta=nombre_receta, descripcion_receta=descripcion_receta, ingredientes=ingredientes, user_id=user_id, colaboradores=colaboradores, image_path=image_path, fecha_receta=fecha_actual)
         db.session.add(receta_de_usuario)
         db.session.commit()
         return redirect(url_for("your_recipes"))
