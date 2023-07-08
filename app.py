@@ -118,6 +118,10 @@ def login():
             flash('Correo o contraseña incorrecta', category='error')
     return render_template('login.html')
 
+@app.route("/admin", methods = ['GET', 'POST'])
+def admin():
+    users = User.query.get(id)
+    return render_template("admin.html", User=users)
 
 
 # Ruta para cerrar session
