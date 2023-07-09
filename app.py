@@ -11,6 +11,10 @@ import os
 from datetime import datetime
 # importamos nuestras funciones creadas
 from funciones import permiso_para_modificar_receta, permiso_para_eliminar_receta, permiso_para_colaboraciones, modo_admin
+import re
+# Importamos openai
+import openai
+openai.api_key = "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"
 
 
 # Instanciamos Flask
@@ -52,6 +56,37 @@ def index():
 def home():
     recetas = Receta.query.all()
     return render_template ("home.html",recetas=recetas)
+
+
+@app.route("/alexia", methods=["POST", "GET"])
+def buscar_alexia():
+    if request.method == 'POST':
+        pregunta = request.form.get("pregunta")
+        # Hace una consulta usando el modelo Chat GPT con "openai"
+        response = openai.Completion.create(
+            engine="text-davinci-003",
+            prompt=f"Chef AlexIA: {pregunta}",  # Agrega el nombre y el estilo de chef al prompt
+            max_tokens=350,
+            n=1,
+            stop=None,
+            temperature=0.2
+        )
+        # Extrae la respuesta generada por el modelo
+        respuesta = response.choices[0].text.strip()
+        # Procesa la respuesta y muestra los resultados al usuario
+        return render_template("alexia.html", respuesta=respuesta, chef_nombre="AlexIA")
+    return render_template("alexia.html", chef_nombre="AlexIA")
+
+
+def obtener_pasos_seguir(respuesta):
+    # Aquí puedes implementar la lógica para extraer y listar los pasos a seguir de la respuesta
+    # según las reglas y patrones esperados en los pasos de las recetas
+    pasos_seguir = []
+    # Ejemplo simple: Extraer pasos numerados
+    pattern = r"\d+\.\s(.+)"  # Buscar patrón de número seguido de punto y espacio
+    matches = re.findall(pattern, respuesta)
+    pasos_seguir = matches
+    return pasos_seguir
 
 
 #Ruta para registrarse

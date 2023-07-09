@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Consulta al Chef AlexIA</title>
+</head>
+<body>
+  <h1>Consulta al Chef AlexIA</h1>
+
+  <form action="/alexia" method="post">
+    <label for="pregunta">Ingresa tu pregunta:</label>
+    <input type="text" name="pregunta" id="pregunta" required>
+    <input type="submit" value="Consultar">
+  </form>
+
+  {% if respuesta %}
+    <h2>{{ chef_nombre }} responde:</h2>
+    <p>{{ respuesta }}</p>
+
+    {% if pasos_seguir %}
+      <h2>Pasos a seguir:</h2>
+      <ol>
+        {% for paso in pasos_seguir %}
+          <li>{{ paso }}</li>
+        {% endfor %}
+      </ol>
+    {% endif %}
+  {% endif %}
+</body>
+</html>
