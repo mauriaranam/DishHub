@@ -40,9 +40,6 @@ def permiso_para_colaboraciones(func):
             print(f'id receta: {receta.user_id}, id current user: {current_user.id}')
             flash('no tienes permisos para modificar', category='error')  # 
             return redirect(url_for('home')) # Devuelve al home
-        
-        
-
     return decorador
 
 
@@ -55,12 +52,11 @@ def permiso_para_eliminar_receta(func):
         if not receta:
             flash('La receta no existe para eliminar', category='error')  # Devuelve un error 404 Not Found si la receta no existe
             return redirect(url_for('home')) # Devuelve al home
-
-        if receta.user_id != current_user.id or current_user.rol != 'admin':
-            flash('no tienes permisos para eliminar', category='error')  # 
-            return redirect(url_for('home')) # Devuelve al home
-        return func(*args, **kwargs)
-
+        if receta.user_id == current_user.id or current_user.rol == 'admin':
+            return func(*args, **kwargs)
+        else:
+            flash('No tienes los permisos para eliminar', category='error')
+            return redirect (url_for('home'))
     return decorador
 
 def modo_admin(func):

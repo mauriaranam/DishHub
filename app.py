@@ -51,7 +51,6 @@ def index():
 @app.route("/home")
 def home():
     recetas = Receta.query.all()
-    print(f'ID DEL USER {current_user.id}')
     return render_template ("home.html",recetas=recetas)
 
 
