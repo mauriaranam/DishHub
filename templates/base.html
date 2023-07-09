@@ -13,12 +13,13 @@
 <!-- ######## HEADER ######## -->
 <header class="bg-white">
   <nav class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global">
-    <div class="flex lg:flex-1">
-      <a href="/home" class="-m-1.5 p-1.5">
-        <span class="sr-only">DishHub</span>
-        <img class="h-8 w-auto" src="{{ url_for('static', filename='dish_hub_icon.png') }}" alt="DishHub_logo">
-      </a>
-    </div>
+      <div class="flex lg:flex-1">
+        <a href="/home" class="-m-1.5 p-1.5">
+          <span class="sr-only">DishHub</span>
+          <img class="h-8 w-auto" src="{{ url_for('static', filename='dish_hub_icon.png') }}" alt="DishHub_logo">
+        </a>
+        <p class="pl-4">{{current_user.nombre}} {{current_user.apellido}}</p>
+      </div>
       
     <div class="flex lg:hidden">
       <button type="button" class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700">
@@ -28,7 +29,7 @@
         </svg>
       </button>
     </div>
-
+    
     <!-- ## SLIDE HEADER ## -->
     <div  class="hidden lg:flex lg:gap-x-12">
       <div class="relative">
@@ -50,10 +51,10 @@
               </div>
               <div class="flex-auto">
                 <a href="#" class="block font-semibold text-gray-900">
-                  Analytics
+                  Mis recetas
                   <span class="absolute inset-0"></span>
                 </a>
-                <p class="mt-1 text-gray-600">Get a better understanding of your traffic</p>
+                <p class="mt-1 text-gray-600">Puedes ver todas tus recetas disponibles</p>
               </div>
             </div>
             <div class="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-50">
@@ -64,10 +65,10 @@
               </div>
               <div class="flex-auto">
                 <a href="#" class="block font-semibold text-gray-900">
-                  Engagement
+                  Agregar receta nueva
                   <span class="absolute inset-0"></span>
                 </a>
-                <p class="mt-1 text-gray-600">Speak directly to your customers</p>
+                <p class="mt-1 text-gray-600">Comparte tus recetas con la comunidad</p>
               </div>
             </div>
             <div class="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-50">
@@ -78,10 +79,10 @@
               </div>
               <div class="flex-auto">
                 <a href="#" class="block font-semibold text-gray-900">
-                  Security
+                  Perfil
                   <span class="absolute inset-0"></span>
                 </a>
-                <p class="mt-1 text-gray-600">Your customers’ data will be safe and secure</p>
+                <p class="mt-1 text-gray-600">Configura tu informacion</p>
               </div>
             </div>
             {% if current_user.is_authenticated %}
@@ -94,10 +95,10 @@
               </div>
               <div class="flex-auto">
                 <a href="/admin" class="block font-semibold text-gray-900">
-                  Integrations
+                  Panel de administrador
                   <span class="absolute inset-0"></span>
                 </a>
-                <p class="mt-1 text-gray-600">Connect with third-party tools</p>
+                <p class="mt-1 text-gray-600">Administrar usuarios</p>
               </div>
             </div>
             {% endif %}
@@ -110,10 +111,10 @@
               </div>
               <div class="flex-auto">
                 <a href="#" class="block font-semibold text-gray-900">
-                  Automations
+                  AlexIA DishHub
                   <span class="absolute inset-0"></span>
                 </a>
-                <p class="mt-1 text-gray-600">Build strategic funnels that will convert</p>
+                <p class="mt-1 text-gray-600">Busca y crea recetas con AlexIA</p>
               </div>
             </div>
           </div>
@@ -121,15 +122,11 @@
         </div>
       </div>
     <!-- ## SLIDE HEADER ## -->
-
-
       <a href="/home" class="text-sm font-semibold leading-6 text-gray-900">Inicio</a>
-      <a href="/recipe_new" class="text-sm font-semibold leading-6 text-gray-900">Agregar receta</a>
-      <a href="/your_recipes" class="text-sm font-semibold leading-6 text-gray-900">Mis recetas</a>
     </div>
     <div class="hidden lg:flex lg:flex-1 lg:justify-end">
       {% if current_user.is_authenticated %}
-      <a href="/logout" class="text-sm font-semibold leading-6 text-gray-900">{{ current_user.username }}<span aria-hidden="true">&rarr;</span></a>
+      <a href="/logout" class="text-sm font-semibold leading-6 text-gray-900">Cerrar sesion<span aria-hidden="true">&rarr;</span></a>
       {% else %}
       <a href="/register" class="text-sm font-semibold leading-6 text-gray-900 pr-4">Registrarse </a>
       <a href="/login" class="text-sm font-semibold leading-6 text-gray-900">Iniciar Sesion <span aria-hidden="true">&rarr;</span></a>
