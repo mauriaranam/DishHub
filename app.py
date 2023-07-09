@@ -156,14 +156,14 @@ def recipe(id):
 @app.route("/recipe_new", methods=["POST", "GET"])
 @login_required
 def recipe_new():
-    users = User.query.filter(User.username != current_user.username).all()
+    users = User.query.filter(User.username != current_user.username and User.username != 'admin_uno').all()
     if request.method == 'POST':
         nombre_receta = request.form.get("nombre_receta")
         descripcion_receta = request.form.get("descripcion_receta")
         ingredientes = request.form.get("ingredientes")
         colaborador = request.form.get('colaborador')
         if colaborador == 'sin_colaborador':
-            print('sin colaborador')
+            colaborador = ','
             pass
         user_id = current_user.id
         file = request.files['image']    
@@ -178,7 +178,7 @@ def recipe_new():
             # Si no se proporcionó un archivo, establece el image_path como None o una ruta predeterminada según tus necesidades
             image_path = None
 
-        receta_de_usuario = Receta(nombre_receta=nombre_receta, descripcion_receta=descripcion_receta, ingredientes=ingredientes, user_id=user_id, colaboradores=colaboradores, image_path=image_path, fecha_receta=fecha_actual)
+        receta_de_usuario = Receta(nombre_receta=nombre_receta, descripcion_receta=descripcion_receta, ingredientes=ingredientes, user_id=user_id, colaboradores=colaborador, image_path=image_path, fecha_receta=fecha_actual)
         db.session.add(receta_de_usuario)
         db.session.commit()
         return redirect(url_for("your_recipes"))
@@ -215,7 +215,7 @@ def recipe_of_user(id_usuario):
 @permiso_para_modificar_receta
 def recipe_edit(receta_id):
     receta = Receta.query.get(receta_id)
-    users = User.query.filter(User.username != current_user.username).all()
+    users = User.query.filter(User.username != current_user.username and User.username != 'admin_uno').all()
     print(receta)
     
     if receta:
@@ -258,7 +258,7 @@ def recipe_edit(receta_id):
 def colaboradores(receta_id):
 
     receta = Receta.query.get(receta_id)
-    users = User.query.filter(User.username != current_user.username).all()
+    users = User.query.filter(User.username != current_user.username and User.username != 'admin_uno').all()
 
     
     colaboradores = []
