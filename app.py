@@ -145,8 +145,11 @@ def logout():
 @login_required
 def recipe(id):
     receta_buscada = Receta.query.get(id)
-    print(receta_buscada.image_path)
-    return render_template ("recipe.html", receta_buscada=receta_buscada)
+    
+    username_colaborador = [name.strip() for name in receta_buscada.colaboradores.split(',')]
+    colaboradores = User.query.filter(User.username.in_(username_colaborador)).all()
+    # print(receta_buscada.image_path)
+    return render_template ("recipe.html", receta_buscada=receta_buscada, colaboradores=colaboradores)
 
 
 #Ruta para crear nueva receta
@@ -188,11 +191,16 @@ def your_recipes():
 @app.route("/recipes_of/<id_usuario>")
 @login_required
 def recipe_of_user(id_usuario):
-    query_recetas = Receta.query.filter_by(user_id=id_usuario).all()
-    if query_recetas:
-        return render_template ("your_recipes.html", query_recetas=query_recetas)
+    usuario = User.query.get(id_usuario)
+    print('nooo')
+    if usuario:
+        print('siiii')
+        query_recetas = Receta.query.filter_by(user_id=usuario.id).all()
+        return render_template ("recipes_of.html", query_recetas=query_recetas, usuario=usuario)
     else:
-        flash('Este usuario no existe :s')
+        flash('Este usuario no existe :s', category='error')
+        return redirect(url_for('home')) # Devuelve al home
+
 
 
 #Ruta para editar una receta
