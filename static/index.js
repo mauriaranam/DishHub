@@ -16,3 +16,13 @@ function slide(){
         slides.classList.add("hidden")
     }
 }
+
+// Para ver opciones de colaborador
+function colab(){
+    let colabs = document.getElementById("colabs");
+    if(colabs.classList.contains("hidden")){
+        colabs.classList.remove("hidden")
+    } else {
+        colabs.classList.add("hidden")
+    }
+}
