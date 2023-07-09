@@ -144,12 +144,12 @@ def logout():
 @app.route("/recipe/<id>")
 @login_required
 def recipe(id):
-    receta_buscada = Receta.query.get(id)
+    receta = Receta.query.get(id)
     
-    username_colaborador = [name.strip() for name in receta_buscada.colaboradores.split(',')]
+    username_colaborador = [name.strip() for name in receta.colaboradores.split(',')]
     colaboradores = User.query.filter(User.username.in_(username_colaborador)).all()
-    # print(receta_buscada.image_path)
-    return render_template ("recipe.html", receta_buscada=receta_buscada, colaboradores=colaboradores)
+    # print(receta.image_path)
+    return render_template ("recipe.html", receta=receta, colaboradores=colaboradores)
 
 
 #Ruta para crear nueva receta
