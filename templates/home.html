@@ -11,8 +11,9 @@
             {% for receta in recetas %}
             <a href="/recipe/{{receta.id}}" class="group text-sm">
                 <div class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-100 group-hover:opacity-75">
-                    <img src="{{ receta.image_path }}" alt="Foto de la receta">
+                    <img src="{{ receta.image_path }}" alt="Foto de la receta" class="object-cover w-full h-full">
                 </div>
+                
                 <h3 class="mt-4 font-medium text-gray-900">{{receta.nombre_receta}}</h3>
                 <p class="italic text-gray-500">{{receta.descripcion_receta}}</p>
                 <p class="mt-2 font-medium text-gray-900">{{receta.user.username}}</p>
@@ -21,6 +22,8 @@
             {% endfor %}
         </div>
     </div>
+</div>
+
 </div>
 
 {% endblock %}
