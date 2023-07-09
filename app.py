@@ -51,13 +51,16 @@ def index():
 @app.route("/home")
 def home():
     recetas = Receta.query.all()
-    print(recetas)
+    # print(recetas)
     return render_template ("home.html",recetas=recetas)
 
 
 #Ruta para registrarse
 @app.route("/register", methods=["POST", "GET"])
 def register():
+    if current_user.is_authenticated:
+        flash(f'Ya estas logeado {current_user.nombre}! :)')
+        return redirect(url_for('home'))
     # Recibimos los datos del Front
     if request.method == 'POST':
         username = request.form.get("username")
@@ -102,6 +105,9 @@ def register():
 #Ruta para logearte
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if current_user.is_authenticated:
+        flash(f'Ya estas logeado {current_user.nombre}! :)')
+        return redirect(url_for('home'))
     if request.method == 'POST':
         correo_user = request.form.get("correo_user")
         password = request.form.get("password")
@@ -137,19 +143,26 @@ def logout():
 @login_required
 def recipe(id):
     receta_buscada = Receta.query.get(id)
-    print(receta_buscada.image_path)
-    return render_template ("recipe.html", receta_buscada=receta_buscada)
+    
+    username_colaborador = [name.strip() for name in receta_buscada.colaboradores.split(',')]
+    colaboradores = User.query.filter(User.username.in_(username_colaborador)).all()
+    # print(receta_buscada.image_path)
+    return render_template ("recipe.html", receta_buscada=receta_buscada, colaboradores=colaboradores)
 
 
 #Ruta para crear nueva receta
 @app.route("/recipe_new", methods=["POST", "GET"])
 @login_required
 def recipe_new():
+    users = User.query.filter(User.username != current_user.username).all()
     if request.method == 'POST':
         nombre_receta = request.form.get("nombre_receta")
         descripcion_receta = request.form.get("descripcion_receta")
         ingredientes = request.form.get("ingredientes")
-        colaboradores = 'mauri'
+        colaborador = request.form.get('colaborador')
+        if colaborador == 'sin_colaborador':
+            print('sin colaborador')
+            pass
         user_id = current_user.id
         file = request.files['image']    
         fecha_actual = datetime.strftime(datetime.now(), '%d, %b, %Y')
@@ -162,11 +175,12 @@ def recipe_new():
         else:
             # Si no se proporcionó un archivo, establece el image_path como None o una ruta predeterminada según tus necesidades
             image_path = None
+
         receta_de_usuario = Receta(nombre_receta=nombre_receta, descripcion_receta=descripcion_receta, ingredientes=ingredientes, user_id=user_id, colaboradores=colaboradores, image_path=image_path, fecha_receta=fecha_actual)
         db.session.add(receta_de_usuario)
         db.session.commit()
         return redirect(url_for("your_recipes"))
-    return render_template("recipe_new.html")
+    return render_template("recipe_new.html", users=users)
 
 
 #Ruta para ver tus recetas
@@ -181,11 +195,16 @@ def your_recipes():
 @app.route("/recipes_of/<id_usuario>")
 @login_required
 def recipe_of_user(id_usuario):
-    query_recetas = Receta.query.filter_by(user_id=id_usuario).all()
-    if query_recetas:
-        return render_template ("your_recipes.html", query_recetas=query_recetas)
+    usuario = User.query.get(id_usuario)
+    print('nooo')
+    if usuario:
+        print('siiii')
+        query_recetas = Receta.query.filter_by(user_id=usuario.id).all()
+        return render_template ("recipes_of.html", query_recetas=query_recetas, usuario=usuario)
     else:
-        flash('Este usuario no existe :s')
+        flash('Este usuario no existe :s', category='error')
+        return redirect(url_for('home')) # Devuelve al home
+
 
 
 #Ruta para editar una receta
@@ -219,6 +238,84 @@ def recipe_edit(receta_id):
         flash('La receta no existe', category='error')
         return redirect(url_for('home'))
     return render_template("recipe_edit.html", receta=receta)
+
+
+# Ruta para ver colaboradores
+@app.route('/colaboradores/<receta_id>', methods=['POST', 'GET'])
+def colaboradores(receta_id):
+    receta = Receta.query.get(receta_id)
+    users = User.query.filter(User.username != current_user.username).all()
+
+    
+    colaboradores = []
+    if receta:
+        print(receta.id)
+
+        username_colaborador = [name.strip() for name in receta.colaboradores.split(',')]
+        colaboradores = User.query.filter(User.username.in_(username_colaborador)).all()
+        return render_template("colaboradores.html", receta=receta, colaboradores=colaboradores, users=users)
+    
+    else:
+        flash('No existe esta receta', category='error')
+        return redirect(url_for('home'))
+
+#Ruta para agregar colaboradores
+@app.route('/colaboradores/<receta_id>/agregar', methods=['POST'])
+def agregar_colaborador(receta_id):
+    receta = Receta.query.get(receta_id)
+    print(receta)
+    
+    username_a_agregar = request.form.get("username")
+    if username_a_agregar == 'sin_colaborador':
+            print('sin colaborador')
+            flash('sin cambios', category='error')
+            return redirect(url_for('colaboradores', receta_id=receta.id))
+
+            
+    if receta:
+        if current_user.username == username_a_agregar:
+            flash('no te podes agregar a vos mismo jaja', category='error')
+            return redirect(url_for('colaboradores', receta_id=receta.id))
+
+        elif not receta.es_usuario_colaborativo(username_a_agregar):
+            receta.colaboradores += f",{username_a_agregar}"
+            db.session.commit()
+            flash(f"Se agregó a {username_a_agregar} como colaborador", category="success")
+            return redirect(url_for('colaboradores', receta_id=receta.id))
+        
+        
+        else:
+            flash(f"{username_a_agregar} ya es colaborador de esta receta", category="error")
+            return redirect(url_for('colaboradores', receta_id=receta.id))
+
+    else:
+        flash("La receta no existe", category="error")
+        return redirect(url_for('home'))
+
+#Ruta para eliminar colaboradores
+@app.route('/colaboradores/eliminar/<receta_id>/<username>')
+def eliminar_colaborador(receta_id, username):
+    receta = Receta.query.get(receta_id)
+
+    if receta:
+        if current_user.username == username:
+            flash('no te podes eliminarte a vos mismo jaja')
+            return redirect(url_for('colaboradores', receta_id=receta.id))
+        if receta.es_usuario_colaborativo(username):
+            colaboradores = [name.strip() for name in receta.colaboradores.split(",")]
+            colaboradores = [name for name in colaboradores if name != username]
+            receta.colaboradores = ",".join(colaboradores)
+            db.session.commit()
+            flash(f"{username} Dejo de ser colaborador", category="success")
+            return redirect(url_for('colaboradores', receta_id=receta.id))
+            
+        else:
+            flash(f"{username} no es un colaborador de esta receta", category="error")
+            return redirect(url_for('colaboradores', receta_id=receta.id))
+
+    else:
+        flash("La receta no existe", category="error")
+        return redirect(url_for('home'))
 
 
 #Ruta donde se eliminan las recetas
