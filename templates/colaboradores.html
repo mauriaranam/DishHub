@@ -15,8 +15,8 @@
                     <h1 class="text-base font-semibold leading-6 text-gray-900">Colaboradores de {{ receta.nombre_receta }}</h1>
                     <p class="mt-2 text-sm text-gray-700">Aqui puedes ver todos los colaboradores:).</p>
                   </div>
-                  <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-                    <button type="button" class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Add user</button>
+                  <div id="closeColab" class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+                    <button onclick="add_colab()" type="button" class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Agregar usuario</button>
                   </div>
                 </div>
                 <div class="mt-8 flow-root">
@@ -52,7 +52,7 @@
                         
                     </div>
                 </div>
-                <form action=" {{ url_for('agregar_colaborador', receta_id=receta.id) }}", method='post'>
+                <form id="addColab" class="hidden" action=" {{ url_for('agregar_colaborador', receta_id=receta.id) }}", method='post'>
 
                     <div class="mt-8 flow-root">
                         <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -67,7 +67,15 @@
                                         <tbody class="divide-y divide-gray-200 bg-white">
                                             <tr>
                                                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                                    <input name="username" type="text">
+                                                    <div>
+                                                        <label for="username" class="block text-sm font-medium leading-6 text-gray-900">Agregar colaborador</label>
+                                                        <select id="username" name="username" class="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                                            <option value="sin_colaborador">Seleccione su colaborador de confianza:)</option>
+                                                            {% for user in users %}
+                                                            <option value="{{ user.username }}">{{ user.username }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -77,6 +85,9 @@
                         </div>
                         <div class=" flex justify-end pt-2">
                             <button type="submit" class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Agregar usuario</button>
+                        </div>
+                        <div class=" flex justify-end pt-2">
+                            <button onclick="add_colab()" type="button" class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Cancelar</button>
                         </div>
                     </div>
                                     

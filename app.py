@@ -156,11 +156,15 @@ def recipe(id):
 @app.route("/recipe_new", methods=["POST", "GET"])
 @login_required
 def recipe_new():
+    users = User.query.filter(User.username != current_user.username).all()
     if request.method == 'POST':
         nombre_receta = request.form.get("nombre_receta")
         descripcion_receta = request.form.get("descripcion_receta")
         ingredientes = request.form.get("ingredientes")
-        colaboradores = 'mauri777'
+        colaborador = request.form.get('colaborador')
+        if colaborador == 'sin_colaborador':
+            print('sin colaborador')
+            pass
         user_id = current_user.id
         file = request.files['image']
         # Verifica si se proporcionó un archivo
@@ -172,11 +176,11 @@ def recipe_new():
         else:
             # Si no se proporcionó un archivo, establece el image_path como None o una ruta predeterminada según tus necesidades
             image_path = None
-        receta_de_usuario = Receta(nombre_receta=nombre_receta, descripcion_receta=descripcion_receta, ingredientes=ingredientes, user_id=user_id, colaboradores=colaboradores, image_path=image_path)
+        receta_de_usuario = Receta(nombre_receta=nombre_receta, descripcion_receta=descripcion_receta, ingredientes=ingredientes, user_id=user_id, colaboradores=colaborador, image_path=image_path)
         db.session.add(receta_de_usuario)
         db.session.commit()
         return redirect(url_for("your_recipes"))
-    return render_template("recipe_new.html")
+    return render_template("recipe_new.html", users=users)
 
 
 #Ruta para ver tus recetas
@@ -240,6 +244,8 @@ def recipe_edit(receta_id):
 @app.route('/colaboradores/<receta_id>', methods=['POST', 'GET'])
 def colaboradores(receta_id):
     receta = Receta.query.get(receta_id)
+    users = User.query.filter(User.username != current_user.username).all()
+
     
     colaboradores = []
     if receta:
@@ -247,7 +253,7 @@ def colaboradores(receta_id):
 
         username_colaborador = [name.strip() for name in receta.colaboradores.split(',')]
         colaboradores = User.query.filter(User.username.in_(username_colaborador)).all()
-        return render_template("colaboradores.html", receta=receta, colaboradores=colaboradores)
+        return render_template("colaboradores.html", receta=receta, colaboradores=colaboradores, users=users)
     
     else:
         flash('No existe esta receta', category='error')
@@ -259,21 +265,27 @@ def agregar_colaborador(receta_id):
     receta = Receta.query.get(receta_id)
     print(receta)
     
-    username = request.form.get("username")
-    if receta:
-        if current_user.username == username:
-            flash('no te podes agregar a vos mismo jaja')
+    username_a_agregar = request.form.get("username")
+    if username_a_agregar == 'sin_colaborador':
+            print('sin colaborador')
+            flash('sin cambios', category='error')
             return redirect(url_for('colaboradores', receta_id=receta.id))
 
-        elif not receta.es_usuario_colaborativo(username):
-            receta.colaboradores += f",{username}"
+            
+    if receta:
+        if current_user.username == username_a_agregar:
+            flash('no te podes agregar a vos mismo jaja', category='error')
+            return redirect(url_for('colaboradores', receta_id=receta.id))
+
+        elif not receta.es_usuario_colaborativo(username_a_agregar):
+            receta.colaboradores += f",{username_a_agregar}"
             db.session.commit()
-            flash(f"Se agregó a {username} como colaborador", category="success")
+            flash(f"Se agregó a {username_a_agregar} como colaborador", category="success")
             return redirect(url_for('colaboradores', receta_id=receta.id))
         
         
         else:
-            flash(f"{username} ya es colaborador de esta receta", category="error")
+            flash(f"{username_a_agregar} ya es colaborador de esta receta", category="error")
             return redirect(url_for('colaboradores', receta_id=receta.id))
 
     else:
