@@ -10,7 +10,7 @@ import os
 # Importamos la libreria datetime
 from datetime import datetime
 # importamos nuestras funciones creadas
-from funciones import permiso_para_modificar_receta, permiso_para_eliminar_receta, modo_admin
+from funciones import permiso_para_modificar_receta, permiso_para_eliminar_receta, permiso_para_colaboraciones, modo_admin
 
 fecha_string = datetime.strftime(datetime.now(), '%b %d, %Y')
 
@@ -53,7 +53,7 @@ def index():
 @app.route("/home")
 def home():
     recetas = Receta.query.all()
-    # print(recetas)
+    print(f'ID DEL USER {current_user.id}')
     return render_template ("home.html",recetas=recetas)
 
 
@@ -130,7 +130,7 @@ def login():
 def admin():
     users = User.query.all()
     print(users)
-    print(current_user.username)
+    print(f'ID DEL USER {current_user.username}')
     return render_template("admin.html", users=users)
 
 # Ruta para cerrar session
@@ -213,6 +213,7 @@ def recipe_of_user(id_usuario):
 @permiso_para_modificar_receta
 def recipe_edit(receta_id):
     receta = Receta.query.get(receta_id)
+    users = User.query.filter(User.username != current_user.username).all()
     print(receta)
     
     if receta:
@@ -220,6 +221,14 @@ def recipe_edit(receta_id):
             receta.nombre_receta = request.form['nombre_receta']
             receta.descripcion_receta = request.form['descripcion_receta']
             receta.ingredientes = request.form['ingredientes']
+            colaborador = request.form.get('colaborador')
+
+            if colaborador == 'sin_colaborador':
+                print('sin colaborador')
+                pass
+            elif not receta.es_usuario_colaborativo(colaborador):
+                receta.colaboradores += f",{colaborador}"
+                db.session.commit()
             file = request.files['image']
             # Verifica si se proporcionó un archivo
             if file:
@@ -237,12 +246,15 @@ def recipe_edit(receta_id):
     else:
         flash('La receta no existe', category='error')
         return redirect(url_for('home'))
-    return render_template("recipe_edit.html", receta=receta)
+    return render_template("recipe_edit.html", receta=receta, users=users)
 
 
 # Ruta para ver colaboradores
 @app.route('/colaboradores/<receta_id>', methods=['POST', 'GET'])
+@login_required
+@permiso_para_colaboraciones
 def colaboradores(receta_id):
+
     receta = Receta.query.get(receta_id)
     users = User.query.filter(User.username != current_user.username).all()
 
@@ -261,6 +273,8 @@ def colaboradores(receta_id):
 
 #Ruta para agregar colaboradores
 @app.route('/colaboradores/<receta_id>/agregar', methods=['POST'])
+@login_required
+@permiso_para_colaboraciones
 def agregar_colaborador(receta_id):
     receta = Receta.query.get(receta_id)
     print(receta)
@@ -294,6 +308,8 @@ def agregar_colaborador(receta_id):
 
 #Ruta para eliminar colaboradores
 @app.route('/colaboradores/eliminar/<receta_id>/<username>')
+@login_required
+@permiso_para_colaboraciones
 def eliminar_colaborador(receta_id, username):
     receta = Receta.query.get(receta_id)
 
