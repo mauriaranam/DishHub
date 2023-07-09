@@ -177,12 +177,7 @@ def recipe_new():
         else:
             # Si no se proporcionó un archivo, establece el image_path como None o una ruta predeterminada según tus necesidades
             image_path = None
-<<<<<<< HEAD
-
-        receta_de_usuario = Receta(nombre_receta=nombre_receta, descripcion_receta=descripcion_receta, ingredientes=ingredientes, user_id=user_id, colaboradores=colaborador, image_path=image_path, fecha_receta=fecha_actual)
-=======
-        receta_de_usuario = Receta(nombre_receta=nombre_receta, descripcion_receta=descripcion_receta, ingredientes=ingredientes, user_id=user_id, colaboradores=colaboradores, image_path=image_path, fecha_receta=fecha_actual, privacidad=privacidad)
->>>>>>> features
+        receta_de_usuario = Receta(nombre_receta=nombre_receta, descripcion_receta=descripcion_receta, ingredientes=ingredientes, user_id=user_id, colaboradores=colaborador, image_path=image_path, fecha_receta=fecha_actual, privacidad=privacidad)
         db.session.add(receta_de_usuario)
         db.session.commit()
         return redirect(url_for("your_recipes"))
@@ -219,12 +214,9 @@ def recipe_of_user(id_usuario):
 @permiso_para_modificar_receta
 def recipe_edit(receta_id):
     receta = Receta.query.get(receta_id)
-<<<<<<< HEAD
     users = User.query.filter(User.username != current_user.username and User.username != 'admin_uno').all()
     print(receta)
     
-=======
->>>>>>> features
     if receta:
         if request.method == 'POST':
             receta.nombre_receta = request.form['nombre_receta']
@@ -395,4 +387,4 @@ def user_del(id):
 
 ## Breakpoint ##
 if __name__ == "__main__":
-    app.run (debug=True)
+    app.run (debug=True)    
