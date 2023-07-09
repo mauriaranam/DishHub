@@ -18,8 +18,8 @@ function slide(){
 }
 
 // Para ver opciones de colaborador
-function colab(){
-    let colabs = document.getElementById("colabs");
+function colab(colaboradorId){
+    let colabs = document.getElementById("colabs-" + colaboradorId );
     if(colabs.classList.contains("hidden")){
         colabs.classList.remove("hidden")
     } else {
