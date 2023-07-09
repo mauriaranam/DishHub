@@ -11,7 +11,8 @@ import os
 from datetime import datetime
 # importamos nuestras funciones creadas
 from funciones import permiso_para_modificar_receta, permiso_para_eliminar_receta, permiso_para_colaboraciones, modo_admin
-
+# Para modificar tamaño de las imagenes
+from PIL import Image
 
 # Instanciamos Flask
 app = Flask(__name__, static_folder='static')
@@ -154,6 +155,7 @@ def recipe(id):
 #Ruta para crear nueva receta
 @app.route("/recipe_new", methods=["POST", "GET"])
 @login_required
+
 def recipe_new():
     users = User.query.filter(User.username != current_user.username and User.username != 'admin_uno').all()
     if request.method == 'POST':
@@ -168,15 +170,26 @@ def recipe_new():
         file = request.files['image']    
         fecha_actual = datetime.strftime(datetime.now(), '%d, %b, %Y')
         privacidad = True
-            # Verifica si se proporcionó un archivo
+        # Verifica si se proporcionó un archivo
         if file:
             # Genera el nombre de archivo combinando el nombre de la receta y el ID de la receta
             filename = f'{nombre_receta}_{current_user.id}.jpg'  # Cambia la extensión según el formato de imagen que desees
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))  # Guarda el archivo en el directorio de uploads
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)  # Ruta completa para el archivo
+
+            # Redimensionar la imagen al formato deseado (1080x1080)
+            desired_image_size = (1080, 1080)
+            image = Image.open(file)
+            image = image.resize(desired_image_size)
+            
+            # Guardar la imagen redimensionada
+            image.save(filepath)
+            # Almacena el path en la dB
             image_path = os.path.join('static/uploads', filename)
+
         else:
             # Si no se proporcionó un archivo, establece el image_path como None o una ruta predeterminada según tus necesidades
             image_path = None
+
         receta_de_usuario = Receta(nombre_receta=nombre_receta, descripcion_receta=descripcion_receta, ingredientes=ingredientes, user_id=user_id, colaboradores=colaborador, image_path=image_path, fecha_receta=fecha_actual, privacidad=privacidad)
         db.session.add(receta_de_usuario)
         db.session.commit()

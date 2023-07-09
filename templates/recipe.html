@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block tittle %} {{receta_buscada.nombre_receta}} {% endblock %}
+{% block tittle %} {{receta.nombre_receta}} {% endblock %}
 
 
 {% block body %}
@@ -22,7 +22,7 @@
         <div class="aspect-h-1 aspect-w-1 w-full">
           <!-- Tab panel, show/hide based on tab state. -->
           <div class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-100 group-hover:opacity-75">
-            <img src="{{ receta_buscada.image_path }}" alt="Foto de la receta">
+            <img src="{{ receta.image_path }}" alt="Foto de la receta" class="object-cover w-full h-full"> 
           </div>
 
           <!-- More images... -->
@@ -31,13 +31,13 @@
 
       <!-- Product info -->
       <div class="mt-10 px-4 sm:mt-16 sm:px-0 lg:mt-0">
-        <h1 class="text-3xl font-bold tracking-tight text-gray-900">{{receta_buscada.nombre_receta}}</h1>
+        <h1 class="text-3xl font-bold tracking-tight text-gray-900">{{receta.nombre_receta}}</h1>
 
         <div class="mb-5">
           <p class="text-ls text-right tracking-tight text-gray-400">
             Hecho por: 
-            <a href="{{ url_for('recipe_of_user', id_usuario=receta_buscada.user.id) }}">             
-              <span class="underline">{{ receta_buscada.user.username }}
+            <a href="{{ url_for('recipe_of_user', id_usuario=receta.user.id) }}">             
+              <span class="underline">{{ receta.user.username }}
             </a>
           </p>
           
@@ -47,21 +47,21 @@
           <h3 class="sr-only">Description</h3>
 
           <div class="space-y-6 text-base text-gray-700">
-            <p>{{receta_buscada.descripcion_receta}}</p>
+            <p>{{receta.descripcion_receta}}</p>
           </div>
         </div>
         
         <div class="mt-6">
           <div class="space-y-6 text-base text-gray-700">
-            <p>Creado el: {{receta_buscada.fecha_receta}}</p>
+            <p>Creado el: {{receta.fecha_receta}}</p>
           </div>
         </div>
 
 
         <div class="mt-10 flex">
           {% if current_user.is_authenticated %}
-          {% if current_user.rol == 'admin' or receta_buscada.user_id == current_user.id or current_user.username in receta_buscada.colaboradores.split(',') %}
-          <a href="/recipe_edit/{{receta_buscada.id}}">
+          {% if current_user.rol == 'admin' or receta.user_id == current_user.id or current_user.username in receta.colaboradores.split(',') %}
+          <a href="/recipe_edit/{{receta.id}}">
             <button type="submit" class="flex max-w-xs flex-1 items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 sm:w-full">Editar</button>
           </a>
           {% endif %}
@@ -87,7 +87,7 @@
                 </button>
               </h3>
               <div class="prose prose-sm pb-6" id="disclosure-1">
-                  <pre>{{ receta_buscada.ingredientes}} </pre>
+                  <pre>{{ receta.ingredientes}} </pre>
               </div>
             </div>
             <!-- More sections... -->
@@ -104,10 +104,10 @@
   {% if colaboradores%}
 
   <div class="mx-auto p-10 max-w-7xl px-4 sm:px-6 lg:px-8">
-    {% if current_user.rol == 'admin' or receta_buscada.user_id == current_user.id %}
+    {% if current_user.rol == 'admin' or receta.user_id == current_user.id %}
     <h1 class="text-center">
       <u>
-        <a href="{{ url_for('colaboradores', receta_id=receta_buscada.id) }}">
+        <a href="{{ url_for('colaboradores', receta_id=receta.id) }}">
           Colaboradores
         </a>
       </u>
@@ -270,7 +270,9 @@
   </div>
   <!-- ## TERMINA COMENTARIOSSS ## -->
 
-
+  <div class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-100 group-hover:opacity-75">
+    <img src="{{ receta.image_path }}" alt="Foto de la receta" class="object-cover w-full h-full">
+  </div>
 
 
 {% endblock %}
