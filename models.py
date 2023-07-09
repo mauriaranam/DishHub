@@ -34,6 +34,8 @@ class Receta(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False) # Creador de la receta
     fecha_receta = db.Column(db.String, default=fecha_string)
     image_path = db.Column(db.String(200), nullable=True)  # Almacena la ruta de la imagen
+    privacidad = db.Column(db.Boolean, default=True)
+
 
 
     # Comprueba si un nombre de usuario se encuentra en la lista de colaboradores

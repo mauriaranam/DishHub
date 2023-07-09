@@ -167,6 +167,7 @@ def recipe_new():
         user_id = current_user.id
         file = request.files['image']    
         fecha_actual = datetime.strftime(datetime.now(), '%d, %b, %Y')
+        privacidad = True
             # Verifica si se proporcionó un archivo
         if file:
             # Genera el nombre de archivo combinando el nombre de la receta y el ID de la receta
@@ -176,8 +177,12 @@ def recipe_new():
         else:
             # Si no se proporcionó un archivo, establece el image_path como None o una ruta predeterminada según tus necesidades
             image_path = None
+<<<<<<< HEAD
 
         receta_de_usuario = Receta(nombre_receta=nombre_receta, descripcion_receta=descripcion_receta, ingredientes=ingredientes, user_id=user_id, colaboradores=colaborador, image_path=image_path, fecha_receta=fecha_actual)
+=======
+        receta_de_usuario = Receta(nombre_receta=nombre_receta, descripcion_receta=descripcion_receta, ingredientes=ingredientes, user_id=user_id, colaboradores=colaboradores, image_path=image_path, fecha_receta=fecha_actual, privacidad=privacidad)
+>>>>>>> features
         db.session.add(receta_de_usuario)
         db.session.commit()
         return redirect(url_for("your_recipes"))
@@ -214,9 +219,12 @@ def recipe_of_user(id_usuario):
 @permiso_para_modificar_receta
 def recipe_edit(receta_id):
     receta = Receta.query.get(receta_id)
+<<<<<<< HEAD
     users = User.query.filter(User.username != current_user.username and User.username != 'admin_uno').all()
     print(receta)
     
+=======
+>>>>>>> features
     if receta:
         if request.method == 'POST':
             receta.nombre_receta = request.form['nombre_receta']
@@ -241,9 +249,13 @@ def recipe_edit(receta_id):
             else:
                 # Si no se proporcionó un archivo, establece el image_path como None o una ruta predeterminada según tus necesidades
                 image_path = None
+            privacidad = request.form.get("privacidad")
+            if privacidad == "publica":
+                receta.privacidad = True
+            elif privacidad == "privada":
+                receta.privacidad = False
             db.session.commit()
             print(receta)
-            return redirect(url_for("your_recipes"))
     else:
         flash('La receta no existe', category='error')
         return redirect(url_for('home'))
