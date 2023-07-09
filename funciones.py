@@ -50,7 +50,6 @@ def permiso_para_eliminar_receta(func):
     @wraps(func)
     def decorador(*args, **kwargs):
         receta_id = kwargs.get('receta_id')
-
         # Verificar si la receta existe en la base de datos
         receta = Receta.query.get(receta_id)
         if not receta:

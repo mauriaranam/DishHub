@@ -124,6 +124,7 @@ def login():
             flash('Correo o contraseña incorrecta', category='error')
     return render_template('login.html')
 
+
 @app.route("/admin", methods=['GET', 'POST'])
 @login_required
 @modo_admin
@@ -132,6 +133,7 @@ def admin():
     print(users)
     print(f'ID DEL USER {current_user.username}')
     return render_template("admin.html", users=users)
+
 
 # Ruta para cerrar session
 @app.route('/logout', methods = ['GET', 'POST'])
