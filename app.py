@@ -184,7 +184,7 @@ def recipe_new():
             # Guardar la imagen redimensionada
             image.save(filepath)
             # Almacena el path en la dB
-            image_path = os.path.join('static/uploads', filename)
+            image_path = os.path.join('/static/uploads', filename)
 
         else:
             # Si no se proporcionó un archivo, establece el image_path como None o una ruta predeterminada según tus necesidades
