@@ -49,6 +49,11 @@ pip install -r requirements.txt
 ```
 pip install -r requirements-windows.txt
 ```
+### Creamos la base de datos
+```
+python init_db.py
+```
+
 ### Por último ejecutamos el programa
 ```
 python3 app.py
