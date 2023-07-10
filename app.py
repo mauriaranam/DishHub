@@ -16,7 +16,7 @@ from PIL import Image
 import re
 # Importamos openai
 import openai
-openai.api_key = "your api key"
+openai.api_key = "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"
 
 
 # Instanciamos Flask
