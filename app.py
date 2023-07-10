@@ -50,7 +50,7 @@ def load_user(id):
 # Ruta de landing page
 @app.route("/")
 def index():
-    return 'Logeate en /login o crea tu cuenta en /register'
+    return redirect(url_for('home'))
 
 
 #Ruta donde se ven todas las recetas
