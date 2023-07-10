@@ -6,17 +6,14 @@
 
 <!-- ## LOGIN ## -->
 <div class="h-screen md:flex">
-	<div class="relative overflow-hidden md:flex w-1/2 bg-gradient-to-tr from-blue-800 to-purple-700 i justify-around items-center hidden">
+	<div class="relative overflow-hidden md:flex w-1/2 bg-gradient-to-tr from-blue-800 to-purple-700 i justify-around items-center hidden" style="background-color: #75704E; background-image: linear-gradient(to bottom, #CACC90, #75704E);">
 		<div>
-			<h1 class="text-white font-bold text-4xl font-sans">DishHub</h1>
-			<p class="text-white mt-1">La pagina mas popular para compartir tus recetas :)</p>
-			<button type="submit" class="block w-28 bg-white text-indigo-800 mt-4 py-2 rounded-2xl font-bold mb-2">Ver mas</button>
+		  <h1 class="text-white font-bold text-4xl font-sans">DishHub</h1>
+		  <p class="text-white mt-1">La página más popular para compartir tus recetas :)</p>
+		  <button type="submit" class="block w-28 bg-white text-indigo-800 mt-4 py-2 rounded-2xl font-bold mb-2">Ver más</button>
 		</div>
-		<div class="absolute -bottom-32 -left-40 w-80 h-80 border-4 rounded-full border-opacity-30 border-t-8"></div>
-		<div class="absolute -bottom-40 -left-20 w-80 h-80 border-4 rounded-full border-opacity-30 border-t-8"></div>
-		<div class="absolute -top-40 -right-0 w-80 h-80 border-4 rounded-full border-opacity-30 border-t-8"></div>
-		<div class="absolute -top-20 -right-20 w-80 h-80 border-4 rounded-full border-opacity-30 border-t-8"></div>
-	</div>
+	  </div>
+	  
 	<div class="flex md:w-1/2 justify-center py-10 items-center bg-white">
 		
 		<form class="bg-white" action="/register" method="POST">
@@ -65,8 +62,11 @@
                 <input required class="pl-2 outline-none border-none" type="password" id="password1" name="password1" placeholder="Constraseña" />
                 <input required class="pl-2 outline-none border-none" type="password" id="password2" name="password2" placeholder="Confirmacion de constraseña" />
             </div>
-            <button type="submit" class="block w-full bg-indigo-600 mt-4 py-2 rounded-2xl text-white font-semibold mb-2">Registrarse</button>
-            <a href="/login">
+			<button type="submit" class="block w-full bg-[#CACC90] hover:bg-[#75704E] mt-4 py-2 rounded-2xl text-white font-semibold mb-2">
+				Registrarse
+			</button>
+			  
+			<a href="/login">
 				<span class="text-sm ml-2 hover:text-blue-500 cursor-pointer">Ya tene tu cuenta wacho?</span>
 			</a>
 		</form>
