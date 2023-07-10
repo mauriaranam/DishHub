@@ -38,26 +38,26 @@
                                             <td class="pl-2 pt-2 pb-2">
                                                 <div>
                                                     <label for="nombre" class="sr-only">Nombre</label>
-                                                    <input type="text" name="nombre" id="nombre" value="{{user.nombre}}" class="block w-full pl-2 rounded-md border-0 py-1.5 pl-2s text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="you@example.com">
+                                                    <input type="text" name="nombre" id="nombre" value="{{user.nombre}}" class="block w-full pl-2 rounded-md border-0 py-1.5 pl-2s text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#CACC90] sm:text-sm sm:leading-6" placeholder="you@example.com">
                                                 </div>
                                             </td>
                                             <td class="pl-2 pt-2 pb-2">
                                                 <div>
                                                     <label for="apellido" class="sr-only">Apellido</label>
-                                                    <input type="text" name="apellido" id="apellido" value="{{user.apellido}}" class="block w-full pl-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="you@example.com">
+                                                    <input type="text" name="apellido" id="apellido" value="{{user.apellido}}" class="block w-full pl-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#CACC90] sm:text-sm sm:leading-6" placeholder="you@example.com">
                                                 </div>
                                             </td>
 
                                             <td class="pl-2 pt-2 pb-2">
                                                 <div>
                                                     <label for="username" class="sr-only">Username</label>
-                                                    <input type="text" name="username" id="username" value="{{user.username}}" class="block w-full pl-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="you@example.com">
+                                                    <input type="text" name="username" id="username" value="{{user.username}}" class="block w-full pl-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#CACC90] sm:text-sm sm:leading-6" placeholder="you@example.com">
                                                 </div>
                                             </td>
 
                                             <td class="pl-2 pr-4 pt-2 pb-2">
                                                 <div>
-                                                    <select id="rol" name="rol" class="block w-full pl-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                                    <select id="rol" name="rol" class="block w-full pl-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#CACC90] sm:text-sm sm:leading-6">
                                                         <option value="gastronomo" {% if user.rol == "gastronomo" %}selected{% endif %}>Gastronomo</option>
                                                         <option value="admin" {% if user.rol == "admin" %}selected{% endif %}>Admin</option>
                                                     </select>
@@ -73,20 +73,20 @@
                         </div>
                         <div class="flex justify-end pt-4">
                             <a href="javascript:history.back()" class="pr-4 ">
-                                <button type="button" class="pr-4 rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
+                                <button type="button" class="pr-4 rounded-md bg-[#75704E] px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#CACC90] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
                                     Cancelar
                                 </button>                                        
                             </a>
 
                             <div class="pr-4">
-                                <button type="submit" class="pr-4 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                <button type="submit" class="pr-4 rounded-md bg-[#CACC90] px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#75704E] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#CACC90]">
                                     Guardar
                                 </button>
                             </div>
                                 
                         </div>
                         <a onclick="check()" href="{{ url_for('user_del', id=user.id) }}" class="flex justify-end m-4">
-                            <button type="button" class="rounded-md bg-red-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
+                            <button type="button" class="rounded-md bg-red-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
                                 Eliminar
                             </button>
                         </a>
