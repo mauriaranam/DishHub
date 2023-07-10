@@ -1,6 +1,6 @@
 # DishHub.
 
-DishHub es una plataforma que te permite compartir y colaborar en la creación de recetas. Los usuarios pueden crear listas de ingredientes, establecer pasos de preparación, comentar y calificar las recetas, y realizar modificaciones colaborativas.
+DishHub es una plataforma de recetas colaborativas que te permite compartir y descubrir nuevas recetas. También cuenta con un asistente virtual llamado "AlexIA" que te brinda recetas utilizando los ingredientes que le proporciones.
 
 ¡Explora, descubre y experimenta con nuevas recetas en conjunto con la comunidad de DishHub!
 
