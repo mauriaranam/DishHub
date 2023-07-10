@@ -7,7 +7,7 @@ Pipfile.lock
 
 
 # Database
-instance/
+#instance/
 
 # pycache
 __pycache__
