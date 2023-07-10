@@ -11,8 +11,16 @@ import os
 from datetime import datetime
 # importamos nuestras funciones creadas
 from funciones import permiso_para_modificar_receta, permiso_para_eliminar_receta, permiso_para_colaboraciones, modo_admin
+<<<<<<< HEAD
 # Para modificar tamaño de las imagenes
 from PIL import Image
+=======
+import re
+# Importamos openai
+import openai
+openai.api_key = "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"
+
+>>>>>>> features
 
 # Instanciamos Flask
 app = Flask(__name__, static_folder='static')
@@ -53,6 +61,57 @@ def index():
 def home():
     recetas = Receta.query.all()
     return render_template ("home.html",recetas=recetas)
+
+
+#Ruta para AlexIA
+@app.route("/alexia", methods=["POST", "GET"])
+def buscar_alexia():
+    if request.method == 'POST':
+        ingredientes_usuario = request.form.get("ingredientes")
+        prompt = """
+        Instrucciones para AlexIA:
+        1. Responde únicamente consultas relacionadas con recetas de cocina, ingredientes y preparaciones.
+        2. Si el usuario pregunta sobre cualquier otro tema, no proporciones una respuesta y muestra un mensaje indicando que AlexIA solo responde consultas culinarias.
+        3. Provee información detallada y precisa sobre las recetas solicitadas.
+        4. Si el usuario solicita inspiración, recomienda platos populares o ofrece sugerencias basadas en preferencias de ingredientes.
+        5. Si el usuario solicita una receta específica, proporciona los ingredientes necesarios y los pasos de preparación de manera clara y organizada.
+        6. Si el usuario tiene alguna pregunta técnica sobre técnicas culinarias, proporciona explicaciones claras y consejos útiles.
+        7. Utiliza un tono amigable y cercano para interactuar con los usuarios.
+        8. Siempre verifica la comprensión de la consulta del usuario antes de proporcionar una respuesta.
+        9. Siempre saluda y pregunta antes de darle alguna indicacion
+        Chef AlexIA: {pregunta}
+        """
+        pregunta = f"{ingredientes_usuario}"
+        response = openai.Completion.create(
+            engine="text-davinci-003",
+            prompt=prompt.format(pregunta=pregunta),
+            max_tokens=500,
+            n=1,
+            stop=None,
+            temperature=0.3
+        )
+        # Obtener la respuesta generada por el modelo
+        respuesta = response.choices[0].text.strip()
+
+        # Procesa la respuesta y muestra los resultados al usuario
+        return render_template("alexia.html", respuesta=respuesta, chef_nombre="AlexIA")
+    return render_template("alexia.html", chef_nombre="AlexIA")
+
+
+#Ruta para la busqueda dentro de la base de datos por ingredientes(Recetas)
+@app.route("/solicitud", methods=['POST', 'GET'])
+def solicitar_recetas():
+    pedido = request.form.get("pedido")
+    recetas = buscar_recetas_db(f"%{pedido}%")
+    recetas_db = None
+    if pedido:
+        recetas_db = buscar_recetas_db(pedido)
+    return render_template("solicitud.html", recetas=recetas, recetas_db=recetas_db)
+
+def buscar_recetas_db(ingredientes):
+    recetas = Receta.query.filter(Receta.ingredientes.ilike(f"%{ingredientes}%")).all()
+    return recetas
+
 
 
 #Ruta para registrarse
@@ -236,7 +295,6 @@ def recipe_edit(receta_id):
             receta.descripcion_receta = request.form['descripcion_receta']
             receta.ingredientes = request.form['ingredientes']
             colaborador = request.form.get('colaborador')
-
             if colaborador == 'sin_colaborador':
                 print('sin colaborador')
                 pass
@@ -272,15 +330,11 @@ def recipe_edit(receta_id):
 @login_required
 @permiso_para_colaboraciones
 def colaboradores(receta_id):
-
     receta = Receta.query.get(receta_id)
     users = User.query.filter(User.username != current_user.username and User.username != 'admin_uno').all()
-
-    
     colaboradores = []
     if receta:
         print(receta.id)
-
         username_colaborador = [name.strip() for name in receta.colaboradores.split(',')]
         colaboradores = User.query.filter(User.username.in_(username_colaborador)).all()
         return render_template("colaboradores.html", receta=receta, colaboradores=colaboradores, users=users)
@@ -288,6 +342,7 @@ def colaboradores(receta_id):
     else:
         flash('No existe esta receta', category='error')
         return redirect(url_for('home'))
+
 
 #Ruta para agregar colaboradores
 @app.route('/colaboradores/<receta_id>/agregar', methods=['POST'])
@@ -302,27 +357,23 @@ def agregar_colaborador(receta_id):
             print('sin colaborador')
             flash('sin cambios', category='error')
             return redirect(url_for('colaboradores', receta_id=receta.id))
-
             
     if receta:
         if current_user.username == username_a_agregar:
             flash('no te podes agregar a vos mismo jaja', category='error')
             return redirect(url_for('colaboradores', receta_id=receta.id))
-
         elif not receta.es_usuario_colaborativo(username_a_agregar):
             receta.colaboradores += f",{username_a_agregar}"
             db.session.commit()
             flash(f"Se agregó a {username_a_agregar} como colaborador", category="success")
             return redirect(url_for('colaboradores', receta_id=receta.id))
-        
-        
         else:
             flash(f"{username_a_agregar} ya es colaborador de esta receta", category="error")
             return redirect(url_for('colaboradores', receta_id=receta.id))
-
     else:
         flash("La receta no existe", category="error")
         return redirect(url_for('home'))
+
 
 #Ruta para eliminar colaboradores
 @app.route('/colaboradores/eliminar/<receta_id>/<username>')
@@ -330,7 +381,6 @@ def agregar_colaborador(receta_id):
 @permiso_para_colaboraciones
 def eliminar_colaborador(receta_id, username):
     receta = Receta.query.get(receta_id)
-
     if receta:
         if current_user.username == username:
             flash('no te podes eliminarte a vos mismo jaja')
@@ -346,7 +396,6 @@ def eliminar_colaborador(receta_id, username):
         else:
             flash(f"{username} no es un colaborador de esta receta", category="error")
             return redirect(url_for('colaboradores', receta_id=receta.id))
-
     else:
         flash("La receta no existe", category="error")
         return redirect(url_for('home'))

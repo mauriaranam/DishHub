@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  
+  <h1>Consulta AlexIA</h1>
+  
+  <form action="/alexia" method="post">
+    <label for="ingredientes">Ingrese su consulta o ingredientes para una receta:</label>
+    <input type="text" name="ingredientes" id="ingredientes" required>
+    <input type="submit" value="Consultar">
+  </form>
+
+  {% if respuesta %}
+  <h2> Respuesta: </h2>
+  <p>{{ respuesta }}</p>
+  {% endif %}
+  <h1> ------- </h1>
+
+
+</body>
+</html>
+
+
