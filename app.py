@@ -296,7 +296,7 @@ def recipe_edit(receta_id):
                 # Genera el nombre de archivo combinando el nombre de la receta y el ID de la receta
                 filename = f'{receta.nombre_receta}_{current_user.id}.jpg'  # Cambia la extensión según el formato de imagen que desees
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))  # Guarda el archivo en el directorio de uploads
-                image_path = os.path.join('static/uploads', filename)
+                image_path = os.path.join('/static/uploads', filename)
                 receta.image_path = image_path
             else:
                 # Si no se proporcionó un archivo, establece el image_path como None o una ruta predeterminada según tus necesidades
@@ -307,7 +307,8 @@ def recipe_edit(receta_id):
             elif privacidad == "privada":
                 receta.privacidad = False
             db.session.commit()
-            print(receta)
+            return redirect(url_for('home'))
+
     else:
         flash('La receta no existe', category='error')
         return redirect(url_for('home'))
