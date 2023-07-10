@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Recetas disponibles en la base de datos con los ingredientes ingresados:</h2>
+
+<form action="/solicitud" method="post">
+    <label for="pedido">Ingrese sus ingredientes:</label>
+    <input type="text" name="pedido" id="pedido" required>
+    <input type="submit" value="Buscar recetas">
+</form>
+
+{% if recetas_db %}
+<ul>
+    {% for receta in recetas_db %}
+    <a href="/recipe/{{receta.id}}">
+    <li>{{ receta.nombre_receta }}</li>
+    </a>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No se encontraron recetas en la base de datos con los ingredientes ingresados.</p>
+{% endif %}
+
+
+
+
+</body>
+</html>
