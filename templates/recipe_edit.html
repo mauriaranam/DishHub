@@ -38,7 +38,7 @@
                     <div>
                         <label for="nombre_receta" class="block text-sm font-medium leading-6 text-gray-900">Nombre de la receta</label>
                         <div class="mt-2">
-                        <input type="text" name="nombre_receta" id="nombre_receta" value="{{receta.nombre_receta}}" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="Ej: chipaguazu." aria-describedby="email-description">
+                        <input type="text" name="nombre_receta" id="nombre_receta" value="{{receta.nombre_receta}}" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#CACC90] sm:text-sm sm:leading-6" placeholder="Ej: chipaguazu." aria-describedby="email-description">
                         </div>
                         <p class="mt-2 text-sm text-gray-500" id="email-description">Se lo mas especifico que puedas :)</p>
                     </div>
@@ -49,7 +49,7 @@
                         <div>
                             <label for="descripcion_receta" class="block text-sm font-medium leading-6 text-gray-900">Descripcion de tu receta</label>
                             <div class="mt-2">
-                                <textarea rows="4" name="descripcion_receta" id="descripcion_receta" value="" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">{{receta.descripcion_receta}}</textarea>
+                                <textarea rows="4" name="descripcion_receta" id="descripcion_receta" value="" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#CACC90] sm:text-sm sm:leading-6">{{receta.descripcion_receta}}</textarea>
                             </div>
                         </div>
                     </div>
@@ -57,7 +57,7 @@
                     <div>
                         <label for="privacidad" class="block text-sm font-medium leading-6 text-gray-900">Privacidad</label>
                         <div class="mt-2">
-                        <input type="text" name="privacidad" id="privacidad"  class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="privada o publica" aria-describedby="email-description">
+                        <input type="text" name="privacidad" id="privacidad"  class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#CACC90] sm:text-sm sm:leading-6" placeholder="privada o publica" aria-describedby="email-description">
                         </div>
                         <p class="mt-2 text-sm text-gray-500" id="email-description">Decide si quieres hacer publica o privada tu receta! :)</p>
                     </div>
@@ -74,7 +74,7 @@
                                         <div>
                                             <label for="ingredientes" class="block text-sm font-medium leading-6 text-gray-900">Ingresa los ingredientes</label>
                                             <div class="mt-2">
-                                            <textarea name="ingredientes" id="ingredientes" value='' class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">{{receta.ingredientes}}</textarea>
+                                            <textarea name="ingredientes" id="ingredientes" value='' class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#CACC90] sm:text-sm sm:leading-6">{{receta.ingredientes}}</textarea>
                                             </div>
                                         </div>
 
@@ -82,7 +82,7 @@
                                 </div>
                                 <div>
                                     <label for="colaborador" class="block text-sm font-medium leading-6 text-gray-900">Agregar colaborador</label>
-                                    <select id="colaborador" name="colaborador" class="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <select id="colaborador" name="colaborador" class="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-[#CACC90] sm:text-sm sm:leading-6">
                                         <option value="sin_colaborador">Sin colaborador</option>
                                         {% for user in users %}
                                         <option value="{{ user.username }}">{{ user.username }}</option>
@@ -91,21 +91,21 @@
                                 </div>
                                 <div class="flex justify-end pt-4">
                                     <a href="javascript:history.back()" class="pr-4 ">
-                                        <button type="button" class="pr-4 rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
+                                        <button type="button" class="pr-4 rounded-md bg-[#75704E] px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#CACC90] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
                                             Cancelar
                                         </button>                                        
                                     </a>
 
                                     <div class="pr-4">
-                                        <button type="submit" class="pr-4 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                        <button type="submit" class="pr-4 rounded-md bg-[#CACC90] px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#75704E] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#CACC90]">
                                             Guardar
                                         </button>
                                     </div>
                                         
                                 </div>
                                 <a onclick="check()" href="{{ url_for('recipe_del', receta_id=receta.id) }}" class="flex justify-end m-4">
-                                    <button type="button" class="rounded-md bg-red-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
-                                        ELIMINAR
+                                    <button type="button" class="rounded-md bg-red-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
+                                        Eliminar
                                     </button>
                                 </a>
                             </div>
