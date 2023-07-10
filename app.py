@@ -16,21 +16,22 @@ from PIL import Image
 import re
 # Importamos openai
 import openai
-openai.api_key = "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"
-
+# Cargar variables de entorno desde el archivo .env
+from dotenv import load_dotenv
+load_dotenv()
 
 # Instanciamos Flask
 app = Flask(__name__, static_folder='static')
 
-
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 
 # Configuraciones para la base de datos
-### Ver para implementar variable de entorno .env
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.sqlite3"
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('SQLALCHEMY_DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = 'SuperSecretKeyxD'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
+# Acceder a la clave de la API de OpenAI desde las variables de entorno
+openai.api_key = os.environ.get('OPENAI_API_KEY')
 
 # Inicializamos la base de datos
 db.init_app(app)
