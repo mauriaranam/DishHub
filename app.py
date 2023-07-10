@@ -11,16 +11,13 @@ import os
 from datetime import datetime
 # importamos nuestras funciones creadas
 from funciones import permiso_para_modificar_receta, permiso_para_eliminar_receta, permiso_para_colaboraciones, modo_admin
-<<<<<<< HEAD
 # Para modificar tamaño de las imagenes
 from PIL import Image
-=======
 import re
 # Importamos openai
 import openai
 openai.api_key = "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"
 
->>>>>>> features
 
 # Instanciamos Flask
 app = Flask(__name__, static_folder='static')
@@ -92,7 +89,6 @@ def buscar_alexia():
         )
         # Obtener la respuesta generada por el modelo
         respuesta = response.choices[0].text.strip()
-
         # Procesa la respuesta y muestra los resultados al usuario
         return render_template("alexia.html", respuesta=respuesta, chef_nombre="AlexIA")
     return render_template("alexia.html", chef_nombre="AlexIA")
@@ -107,11 +103,9 @@ def solicitar_recetas():
     if pedido:
         recetas_db = buscar_recetas_db(pedido)
     return render_template("solicitud.html", recetas=recetas, recetas_db=recetas_db)
-
 def buscar_recetas_db(ingredientes):
     recetas = Receta.query.filter(Receta.ingredientes.ilike(f"%{ingredientes}%")).all()
     return recetas
-
 
 
 #Ruta para registrarse
@@ -214,7 +208,6 @@ def recipe(id):
 #Ruta para crear nueva receta
 @app.route("/recipe_new", methods=["POST", "GET"])
 @login_required
-
 def recipe_new():
     users = User.query.filter(User.username != current_user.username and User.username != 'admin_uno').all()
     if request.method == 'POST':
@@ -234,7 +227,6 @@ def recipe_new():
             # Genera el nombre de archivo combinando el nombre de la receta y el ID de la receta
             filename = f'{nombre_receta}_{current_user.id}.jpg'  # Cambia la extensión según el formato de imagen que desees
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)  # Ruta completa para el archivo
-
             # Redimensionar la imagen al formato deseado (1080x1080)
             desired_image_size = (1080, 1080)
             image = Image.open(file)
@@ -244,11 +236,9 @@ def recipe_new():
             image.save(filepath)
             # Almacena el path en la dB
             image_path = os.path.join('/static/uploads', filename)
-
         else:
             # Si no se proporcionó un archivo, establece el image_path como None o una ruta predeterminada según tus necesidades
             image_path = None
-
         receta_de_usuario = Receta(nombre_receta=nombre_receta, descripcion_receta=descripcion_receta, ingredientes=ingredientes, user_id=user_id, colaboradores=colaborador, image_path=image_path, fecha_receta=fecha_actual, privacidad=privacidad)
         db.session.add(receta_de_usuario)
         db.session.commit()
@@ -277,7 +267,6 @@ def recipe_of_user(id_usuario):
     else:
         flash('Este usuario no existe :s', category='error')
         return redirect(url_for('home')) # Devuelve al home
-
 
 
 #Ruta para editar una receta
